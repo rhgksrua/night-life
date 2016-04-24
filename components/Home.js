@@ -1,10 +1,12 @@
 import React from 'react';
+import BarsList from './bars/BarsList';
 
 class Home extends React.Component {
     render() {
         return (
             <div className='home-container'>
-                <p>This is where you search and list bars</p>
+                <h1>Night Life</h1>
+                <BarsList />
             </div>
         );
     }

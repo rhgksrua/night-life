@@ -5,4 +5,16 @@ html(lang='en')
         link(rel='stylesheet' href='/index.css')
     body
         div#app
+        
+        a(href='/auth/github') Login
+        a(href='/logout') Log Out
+        
+        if logout == 'true'
+            div logged out
+            
+        if loggedin == 'true'
+            div logged in
+        
+        
+        
         script(type='text/javascript' src='/bundle.js')
