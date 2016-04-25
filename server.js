@@ -3,6 +3,7 @@ var morgan = require('morgan');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var session = require('express-session');
+var userRoutes = require('./routes/api/user');
 
 require('dotenv').load();
 
@@ -41,7 +42,7 @@ function isLoggedIn(req, res, next) {
     }
 }
 
-app.get('/', function(req, res) {
+app.get('/*', function(req, res) {
     if (req.query.logout) {
         return res.render('index', {logout: 'true'});
     }
@@ -51,6 +52,9 @@ app.get('/', function(req, res) {
     console.log(req.user);
     res.render('index');
 });
+
+app.use('/api/user', userRoutes);
+
 app.get('/login', function(req, res) {
     res.render('login');
 });
