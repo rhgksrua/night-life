@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var session = require('express-session');
 var userRoutes = require('./routes/api/user');
+var Yelp = require('yelp');
 
 require('dotenv').load();
 
@@ -42,6 +43,41 @@ function isLoggedIn(req, res, next) {
     }
 }
 
+var yelp = new Yelp({
+    consumer_key: process.env.YELP_KEY,
+    consumer_secret: process.env.YELP_SECRET,
+    token: process.env.YELP_TOKEN,
+    token_secret: process.env.YELP_TOKEN_SECRET
+});
+
+app.get('/test', function(req, res) {
+    res.send('test');
+});
+
+app.get('/test/test', function(req, res) {
+    yelp.search({ term: 'bar', location: 'new york', limit: 1})
+        .then((data) => {
+            console.log(data);
+            res.json(data);
+        });
+});
+
+app.get('/auth/github',
+    passport.authenticate('github')
+);
+
+app.get('/auth/github/callback',
+    passport.authenticate('github', {failureRedirect: '/login'}),
+    function(req, res) {
+        res.redirect('/?loggedin=true');
+    }
+);
+
+app.get('/logout', function(req, res) {
+    req.logout();
+    res.redirect('/?logout=' + encodeURIComponent('true'));
+});
+
 app.get('/*', function(req, res) {
     if (req.query.logout) {
         return res.render('index', {logout: 'true'});
@@ -59,21 +95,7 @@ app.get('/login', function(req, res) {
     res.render('login');
 });
 
-app.get('/logout', function(req, res) {
-    req.logout();
-    res.redirect('/?logout=' + encodeURIComponent('true'));
-});
 
-app.get('/auth/github',
-    passport.authenticate('github')
-);
-
-app.get('/auth/github/callback',
-    passport.authenticate('github', {failureRedirect: '/login'}),
-    function(req, res) {
-        res.redirect('/?loggedin=true');
-    }
-);
 
 
 app.listen(port, function() {

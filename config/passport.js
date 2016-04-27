@@ -14,7 +14,6 @@ module.exports = function (passport) {
 			done(err, user);
 		});
 	});
-    console.log('configAuth url', configAuth.githubAuth.callbackURL);
 	passport.use(new GitHubStrategy({
 		clientID: configAuth.githubAuth.clientID,
 		clientSecret: configAuth.githubAuth.clientSecret,
