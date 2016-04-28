@@ -6,11 +6,6 @@ class App extends React.Component {
     componentWillMount() {
         console.log('app mount');
         console.log('query', this.props.location.query);
-        /*
-        $.get('test/test', data => {
-            console.log('data', data);
-        });
-        */
     }
     render() {
         return (

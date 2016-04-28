@@ -5,13 +5,16 @@
 import fetch from 'isomorphic-fetch';
 import Yelp from 'yelp';
 
-const SEARCH_TERM = 'bar';
+export const SEARCH_TERM = 'bar';
 
-const REQUEST_RESULT = 'REQUEST_RESULT';
+export const REQUEST_RESULT = 'REQUEST_RESULT';
+export const ADD_BARS = 'ADD_BARS';
+export const ADD_BAR = 'ADD_BAR';
+export const REMOVE_BAR = 'REMOVE_BAR';
 
 fetch('/test/test')
     .then((data) => {
-        console.log(data);
+        //console.log('test/test', data);
     })
     .catch((err) => {
         console.log(err);
@@ -25,6 +28,13 @@ export const searchTerm = (term) => {
     };
 };
 
+export const addBars = (bars) => {
+    return {
+        type: ADD_BARS,
+        bars
+    };
+}
+
 // returns yelp api result
 export const getSearchResult = (loc) => {
     return dispatch => {
@@ -34,7 +44,10 @@ export const getSearchResult = (loc) => {
                 return data.json();
             })
             .then((data) => {
+                // data.businesses is an array.
+                dispatch(addBars(data.businesses));
                 console.log('fetch data', data);
+                return data;
             });
     };
 };

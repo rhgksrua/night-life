@@ -55,8 +55,8 @@ app.get('/test', function(req, res) {
 });
 
 app.get('/test/test', function(req, res) {
-    yelp.search({ term: 'bar', location: 'new york', limit: 1})
-        .then((data) => {
+    yelp.search({ term: 'bar', location: 'new york', limit: 2})
+        .then(function(data) {
             console.log(data);
             res.json(data);
         });

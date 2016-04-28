@@ -6,20 +6,24 @@ import nightLifeApp from './reducers/reducer';
 import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import createLogger from 'redux-logger';
-import { searchTerm, getSearchResult } from './actions/index';
+import { searchTerm, getSearchResult } from './actions/actions';
 
 import App from './App';
 import Home from './Home';
 import Me from './Me';
 import NoMatch from './NoMatch';
 
-let store = createStore(nightLifeApp, applyMiddleware(thunkMiddleware, createLogger));
+const loggerMiddleware = createLogger();
 
+let store = createStore(nightLifeApp, applyMiddleware(thunkMiddleware, loggerMiddleware));
+
+/*
 store.dispatch(searchTerm('this is location'));
 store.dispatch(getSearchResult('new york'))
     .then(() => {
-        console.log(store.getState());
+        console.log('store getstate', store.getState());
     })
+*/
 
 ReactDOM.render((
     <Provider store={store}>
