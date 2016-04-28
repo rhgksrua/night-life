@@ -5,6 +5,7 @@ var passport = require('passport');
 var session = require('express-session');
 var userRoutes = require('./routes/api/user');
 var Yelp = require('yelp');
+var bodyParser = require('body-parser');
 
 require('dotenv').load();
 
@@ -28,6 +29,11 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 
 app.set('view engine', 'pug');
 app.set('views', './templates');
@@ -54,9 +60,15 @@ app.get('/test', function(req, res) {
     res.send('test');
 });
 
-app.get('/test/test', function(req, res) {
-    yelp.search({ term: 'bar', location: 'new york', limit: 1})
-        .then((data) => {
+app.post('/test/test', function(req, res) {
+    
+    var loc = req.body.loc;
+    console.log('----loc', loc, req.body);
+    if (!loc) {
+        return res.json({error: 'no location'});
+    }
+    yelp.search({ term: 'bar', location: loc, limit: 3})
+        .then(function(data) {
             console.log(data);
             res.json(data);
         });

@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/rhgksrua/night-life#readme",
   "dependencies": {
+    "body-parser": "^1.15.0",
     "dotenv": "^2.0.0",
     "express": "^4.13.4",
     "express-session": "^1.13.0",
