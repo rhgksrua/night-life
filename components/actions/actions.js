@@ -11,6 +11,7 @@ export const REQUEST_RESULT = 'REQUEST_RESULT';
 export const ADD_BARS = 'ADD_BARS';
 export const ADD_BAR = 'ADD_BAR';
 export const REMOVE_BAR = 'REMOVE_BAR';
+export const ADD_USERNAME = 'ADD_USERNAME';
 
 fetch('/test/test')
     .then((data) => {
@@ -33,6 +34,13 @@ export const addBars = (bars) => {
         type: ADD_BARS,
         bars
     };
+}
+
+export const addUsername = username => {
+    return {
+        type: ADD_USERNAME,
+        username
+    }
 }
 
 // returns yelp api result
@@ -74,9 +82,7 @@ export const getUserInfo = () => {
                 // requests server to verify user based on cookie
                 `${window.location.protocol}//${window.location.host}/userinfo`,
                 {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    credentials: 'same-origin',
                     method: 'post'
                 }
             )
@@ -85,6 +91,12 @@ export const getUserInfo = () => {
             })
             .then((data) => {
                 // dispatch here to set the username
+                console.log(data);
+                if (data.error) {
+                    return data;
+                }
+                dispatch(addUsername(data.username));
+                return data;
                 
             })
             .catch((err) => {

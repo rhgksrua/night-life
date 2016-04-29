@@ -1,7 +1,7 @@
 'use strict';
 
 import { combineReducers } from 'redux';
-import { REQUEST_RESULT, ADD_BARS, ADD_BAR, REMOVE_BAR } from '../actions/actions';
+import { REQUEST_RESULT, ADD_BARS, ADD_BAR, REMOVE_BAR, ADD_USERNAME } from '../actions/actions';
 
 function barsList(state = {isFetching: false}, action) {
     switch(action.type) {
@@ -38,9 +38,21 @@ function myList(state = [], action) {
     }
 }
 
+function userInfo(state = {}, action) {
+    switch(action.type) {
+        case ADD_USERNAME:
+            return Object.assign({}, state, {
+                username: action.username
+            });
+        default:
+            return state;
+    }
+}
+
 const rootReducer = combineReducers({
     barsList,
-    myList
+    myList,
+    userInfo
 });
 
 export default rootReducer;

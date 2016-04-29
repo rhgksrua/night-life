@@ -38,11 +38,12 @@ class BarsListContainer extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { barsList, myList } = state;
-    console.log('mapstate state', state);
+    const { barsList, myList, userInfo } = state;
+    //console.log('mapstate state', state);
     return {
         barsList,
-        myList 
+        myList,
+        userInfo
     };
 }
 
