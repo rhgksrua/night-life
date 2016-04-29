@@ -67,11 +67,15 @@ app.post('/test/test', function(req, res) {
     if (!loc) {
         return res.json({error: 'no location'});
     }
-    yelp.search({ term: 'bar', location: loc, limit: 3})
+    yelp.search({ term: 'bar', location: loc, limit: 5})
         .then(function(data) {
-            console.log(data);
-            res.json(data);
-        });
+            console.log('data', data);
+            return res.json(data);
+        })
+        .catch(function(err) {
+            console.log('error', err);
+            return res.json({error: 'yelp api error'});
+        })
 });
 
 app.get('/auth/github',

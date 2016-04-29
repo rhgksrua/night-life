@@ -11,6 +11,7 @@ import { searchTerm, getSearchResult } from './actions/actions';
 import App from './App';
 import Home from './Home';
 import Me from './Me';
+import MeContainer from './containers/MeContainer';
 import NoMatch from './NoMatch';
 
 const loggerMiddleware = createLogger();
@@ -30,7 +31,7 @@ ReactDOM.render((
         <Router history={browserHistory}>
             <Route path='/' component={App}>
                 <IndexRoute component={Home} />
-                <Route path='me' component={Me} />
+                <Route path='me' component={MeContainer} />
             </Route>
             <Route path='*' component={NoMatch} />
         </Router>

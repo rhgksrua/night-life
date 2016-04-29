@@ -3,17 +3,19 @@
 import { combineReducers } from 'redux';
 import { REQUEST_RESULT, ADD_BARS, ADD_BAR, REMOVE_BAR } from '../actions/actions';
 
-function barsList(state = {}, action) {
+function barsList(state = {isFetching: false}, action) {
     switch(action.type) {
         case REQUEST_RESULT:
             return Object.assign({}, state, {
-                term: action.term
+                term: action.term,
+                isFetching: true
             });
         case ADD_BARS:
             console.log('updating add bars', action.bars);
             return Object.assign({}, state, {
                 bars: action.bars,
-                updated: 'yes updated'
+                updated: 'yes updated',
+                isFetching: false
             });
         default:
             return state;
@@ -26,7 +28,7 @@ function barsList(state = {}, action) {
 function myList(state = [], action) {
     switch(action.type) {
         case ADD_BAR:
-            return state.concat(action.bar);
+            return state.concat(action.barId);
         case REMOVE_BAR:
             return state.filter((bar) => {
                 return bar.barId === action.barId;

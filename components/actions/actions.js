@@ -40,27 +40,57 @@ export const getSearchResult = (loc) => {
     return dispatch => {
         dispatch(searchTerm(loc));
         return fetch(
-            'https://night-life-rhgksrua-1.c9users.io/test/test',
-            {
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                method: 'post',
-                body: JSON.stringify({loc: loc})
-            }
-        )
+                `${window.location.protocol}//${window.location.host}/test/test`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    method: 'post',
+                    body: JSON.stringify({loc: loc})
+                }
+            )
             .then((data) => {
                 return data.json();
             })
             .then((data) => {
+                console.log('check error', data);
+                if (data.error) {
+                    dispatch(addBars([]));
+                    return data;
+                }
                 // data.businesses is an array.
                 dispatch(addBars(data.businesses));
-                console.log('fetch data', data);
+                //console.log('fetch data', data);
                 return data;
             }).catch((err) => {
                 console.warn(err);
             })
     };
+};
+
+export const getUserInfo = () => {
+    return dispatch => {
+        return fetch(
+                // requests server to verify user based on cookie
+                `${window.location.protocol}//${window.location.host}/userinfo`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    method: 'post'
+                }
+            )
+            .then((data) => {
+                return data.json();
+            })
+            .then((data) => {
+                // dispatch here to set the username
+                
+            })
+            .catch((err) => {
+                console.warn(err);
+            })
+    }
 };
 
 // returns list of bars user is attending
@@ -71,17 +101,20 @@ export const getUserBarList = (list) => {
 };
 
 // change status to "going" in search result and user list
-export const addBar = (bar) => {
+export const addBar = (barId) => {
     return {
-        
+        type: ADD_BAR,
+        barId
     };
     
 };
 
 
 // change status to "not going" in search result and user list
-export const removeBar = (bar) => {
+export const removeBar = (barId) => {
     return {
+        type: REMOVE_BAR,
+        barId
         
     };
     
