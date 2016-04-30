@@ -28,10 +28,11 @@ function barsList(state = {isFetching: false}, action) {
 function myList(state = [], action) {
     switch(action.type) {
         case ADD_BAR:
-            return state.concat(action.barId);
+            return state.concat(action.bar);
         case REMOVE_BAR:
             return state.filter((bar) => {
-                return bar.barId === action.barId;
+                //console.log('reducer bar', bar.barId, action.barId);
+                return bar.id !== action.barId;
             });
         default:
             return state;

@@ -6,7 +6,12 @@ class Me extends React.Component {
         let myBarsList;
         if (myList && myList.length > 0) {
             myBarsList = myList.map((bar, i) => {
-                return <li key={i}>{bar.name}</li>
+                return (
+                    <li key={i}>
+                        <p>{bar.name}</p>
+                        <button onClick={this.props.removeBarFromMe.bind(this, bar.id)}>remove</button>
+                    </li>
+                );
             });
         }
         return (

@@ -113,13 +113,44 @@ export const getUserBarList = (list) => {
 };
 
 // change status to "going" in search result and user list
-export const addBar = (barId) => {
+export const addBar = (bar) => {
     return {
         type: ADD_BAR,
-        barId
+        bar
     };
-    
 };
+
+export const addBarAJAX = (bar) => {
+    return dispatch => {
+        return fetch(
+                // requests server to verify user based on cookie
+                `${window.location.protocol}//${window.location.host}/addbar`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ bar }),
+                    credentials: 'same-origin',
+                    method: 'post'
+                }
+                
+            )
+            .then((data) => {
+                return data.json();
+            })
+            .then((data) => {
+                if (data.error) {
+                    return data;
+                }
+                dispatch(addBar(bar));
+                return data;
+            })
+            .catch((err) => {
+                //dispatch(addBar(bar));
+                console.warn(err);
+            })
+    };
+}
 
 
 // change status to "not going" in search result and user list
@@ -127,7 +158,6 @@ export const removeBar = (barId) => {
     return {
         type: REMOVE_BAR,
         barId
-        
     };
     
 };

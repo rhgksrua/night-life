@@ -13,6 +13,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch, ownProps) {
     return {
         removeBarFromMe: id => {
+            console.log('remove id', id);
             dispatch(removeBar(id));
         }
     };

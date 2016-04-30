@@ -27245,10 +27245,11 @@
 
 	    switch (action.type) {
 	        case _actions.ADD_BAR:
-	            return state.concat(action.barId);
+	            return state.concat(action.bar);
 	        case _actions.REMOVE_BAR:
 	            return state.filter(function (bar) {
-	                return bar.barId === action.barId;
+	                //console.log('reducer bar', bar.barId, action.barId);
+	                return bar.id !== action.barId;
 	            });
 	        default:
 	            return state;
@@ -27288,7 +27289,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.removeBar = exports.addBar = exports.getUserBarList = exports.getUserInfo = exports.getSearchResult = exports.addUsername = exports.addBars = exports.searchTerm = exports.ADD_USERNAME = exports.REMOVE_BAR = exports.ADD_BAR = exports.ADD_BARS = exports.REQUEST_RESULT = exports.SEARCH_TERM = undefined;
+	exports.removeBar = exports.addBarAJAX = exports.addBar = exports.getUserBarList = exports.getUserInfo = exports.getSearchResult = exports.addUsername = exports.addBars = exports.searchTerm = exports.ADD_USERNAME = exports.REMOVE_BAR = exports.ADD_BAR = exports.ADD_BARS = exports.REQUEST_RESULT = exports.SEARCH_TERM = undefined;
 
 	var _isomorphicFetch = __webpack_require__(254);
 
@@ -27393,10 +27394,36 @@
 	};
 
 	// change status to "going" in search result and user list
-	var addBar = exports.addBar = function addBar(barId) {
+	var addBar = exports.addBar = function addBar(bar) {
 	    return {
 	        type: ADD_BAR,
-	        barId: barId
+	        bar: bar
+	    };
+	};
+
+	var addBarAJAX = exports.addBarAJAX = function addBarAJAX(bar) {
+	    return function (dispatch) {
+	        return (0, _isomorphicFetch2.default)(
+	        // requests server to verify user based on cookie
+	        window.location.protocol + '//' + window.location.host + '/addbar', {
+	            headers: {
+	                'Content-Type': 'application/json'
+	            },
+	            body: JSON.stringify({ bar: bar }),
+	            credentials: 'same-origin',
+	            method: 'post'
+	        }).then(function (data) {
+	            return data.json();
+	        }).then(function (data) {
+	            if (data.error) {
+	                return data;
+	            }
+	            dispatch(addBar(bar));
+	            return data;
+	        }).catch(function (err) {
+	            //dispatch(addBar(bar));
+	            console.warn(err);
+	        });
 	    };
 	};
 
@@ -27405,7 +27432,6 @@
 	    return {
 	        type: REMOVE_BAR,
 	        barId: barId
-
 	    };
 	};
 
@@ -38082,20 +38108,25 @@
 	    _createClass(App, [{
 	        key: 'componentWillMount',
 	        value: function componentWillMount() {
-	            console.log('app mount');
+	            // uses query to keep previous search term
 	            console.log('query', this.props.location.query);
+	            var dispatch = this.props.dispatch;
+
+	            dispatch((0, _actions.getUserInfo)());
+	            if (this.props.location.query.term) {
+	                // maybe create prevSearchTerm
+	                dispatch((0, _actions.getSearchResult)(this.props.location.query.term));
+	            }
 	        }
 	    }, {
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
 	            console.log('did mount get username');
-	            var dispatch = this.props.dispatch;
-
-	            dispatch((0, _actions.getUserInfo)());
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var term = this.props.barsList.term ? '?term=' + this.props.barsList.term : '';
 	            return _react2.default.createElement(
 	                'div',
 	                { className: 'app-container' },
@@ -38136,7 +38167,7 @@
 	                    ),
 	                    _react2.default.createElement(
 	                        'a',
-	                        { href: '/auth/github' },
+	                        { href: '/auth/github/' + term },
 	                        'login from react'
 	                    ),
 	                    this.props.userInfo.username && _react2.default.createElement(
@@ -38323,11 +38354,11 @@
 	    return {
 	        addBarToMe: function addBarToMe(bar) {
 	            console.log('addBarToMe', bar);
-	            dispatch((0, _actions.addBar)(bar));
+	            dispatch((0, _actions.addBarAJAX)(bar));
 	        },
-	        removeBarFromMe: function removeBarFromMe(bar, myList) {
-	            console.log('removing bar from me', bar);
-	            dispatch((0, _actions.removeBar)(bar));
+	        removeBarFromMe: function removeBarFromMe(barId, myList) {
+	            console.log('removing bar from me', barId);
+	            dispatch((0, _actions.removeBar)(barId));
 	        }
 
 	    };
@@ -38371,6 +38402,7 @@
 	    _createClass(BarsList, [{
 	        key: 'handleAddBarToMe',
 	        value: function handleAddBarToMe(bar) {
+	            // bar exists in myList, removes bar instead.
 	            if (this.props.myList.some(function (myBar) {
 	                return bar.id === myBar.id;
 	            })) {
@@ -38440,6 +38472,8 @@
 	    value: true
 	});
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 	var _react = __webpack_require__(2);
 
 	var _react2 = _interopRequireDefault(_react);
@@ -38450,36 +38484,84 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var SearchBars = function SearchBars(_ref) {
-	    var dispatch = _ref.dispatch;
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	    var input = void 0;
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	    return _react2.default.createElement(
-	        'div',
-	        null,
-	        _react2.default.createElement(
-	            'form',
-	            { onSubmit: function onSubmit(e) {
-	                    e.preventDefault();
-	                    if (!input.value.trim()) {
-	                        return;
-	                    }
-	                    dispatch((0, _actions.getSearchResult)(input.value));
-	                } },
-	            _react2.default.createElement('input', { ref: function ref(node) {
-	                    input = node;
-	                } }),
-	            _react2.default.createElement(
-	                'button',
-	                { type: 'submit' },
-	                'Search'
-	            )
-	        )
-	    );
-	};
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	SearchBars = (0, _reactRedux.connect)()(SearchBars);
+	var SearchBars = function (_React$Component) {
+	    _inherits(SearchBars, _React$Component);
+
+	    function SearchBars(props) {
+	        _classCallCheck(this, SearchBars);
+
+	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SearchBars).call(this, props));
+
+	        _this.state = { text: '' };
+	        return _this;
+	    }
+
+	    _createClass(SearchBars, [{
+	        key: 'handleChange',
+	        value: function handleChange(e) {
+	            this.setState({ text: e.target.value });
+	        }
+	    }, {
+	        key: 'handleSubmit',
+	        value: function handleSubmit(e) {
+	            e.preventDefault();
+	            var dispatch = this.props.dispatch;
+
+	            dispatch((0, _actions.getSearchResult)(this.state.text));
+	        }
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            var term = this.props.barsList.term;
+	            if (term) {
+	                this.setState({ text: term });
+	            }
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            //let input;
+	            //const { barsList, dispatch } = this.props.barsList;
+	            //console.log('barslist in SEARch', barsList.term);
+
+	            return _react2.default.createElement(
+	                'div',
+	                null,
+	                _react2.default.createElement(
+	                    'form',
+	                    { onSubmit: this.handleSubmit.bind(this) },
+	                    _react2.default.createElement('input', {
+	                        value: this.state.text,
+	                        onChange: this.handleChange.bind(this)
+	                    }),
+	                    _react2.default.createElement(
+	                        'button',
+	                        { type: 'submit' },
+	                        'Search'
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+
+	    return SearchBars;
+	}(_react2.default.Component);
+
+	function mapStateToProps(state) {
+	    var barsList = state.barsList;
+
+	    return {
+	        barsList: barsList
+	    };
+	}
+
+	SearchBars = (0, _reactRedux.connect)(mapStateToProps)(SearchBars);
 
 	exports.default = SearchBars;
 
@@ -38519,6 +38601,8 @@
 	    _createClass(Me, [{
 	        key: 'render',
 	        value: function render() {
+	            var _this2 = this;
+
 	            var myList = this.props.myList;
 	            var myBarsList = void 0;
 	            if (myList && myList.length > 0) {
@@ -38526,7 +38610,16 @@
 	                    return _react2.default.createElement(
 	                        'li',
 	                        { key: i },
-	                        bar.name
+	                        _react2.default.createElement(
+	                            'p',
+	                            null,
+	                            bar.name
+	                        ),
+	                        _react2.default.createElement(
+	                            'button',
+	                            { onClick: _this2.props.removeBarFromMe.bind(_this2, bar.id) },
+	                            'remove'
+	                        )
 	                    );
 	                });
 	            }
@@ -38583,6 +38676,7 @@
 	function mapDispatchToProps(dispatch, ownProps) {
 	    return {
 	        removeBarFromMe: function removeBarFromMe(id) {
+	            console.log('remove id', id);
 	            dispatch((0, _actions.removeBar)(id));
 	        }
 	    };

@@ -8,7 +8,8 @@ var User = new Schema({
 		id: String,
 		displayName: String,
 		username: String,
-      publicRepos: Number
+	    publicRepos: Number,
+	    created: { type: Date, default: Date.now }
 	}
 });
 

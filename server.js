@@ -7,6 +7,9 @@ var userRoutes = require('./routes/api/user');
 var Yelp = require('yelp');
 var bodyParser = require('body-parser');
 var MongoStore = require('connect-mongo')(session);
+var favicon = require('serve-favicon');
+var User = require('./models/Users');
+var Bars = require('./models/Bars');
 
 require('dotenv').load();
 
@@ -16,6 +19,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+
+app.use(favicon(__dirname + '/dist/favicon.ico'));
 
 require('./config/passport')(passport);
 
@@ -56,14 +61,20 @@ function isLoggedIn(req, res, next) {
 }
 
 function isLoggedInAJAX(req, res, next) {
-    console.log('---req.user', req.user);
-    console.log(req.isAuthenticated());
+    //console.log('---req.user', req.user);
+    //console.log(req.isAuthenticated());
     if (req.isAuthenticated()) {
         return next();
     } else {
         res.json({error: 'authentication failure'});
     }
-    
+}
+
+function saveTermMiddleware(req, res, next) {
+    if (req.query.term) {
+        req.session.term = req.query.term;
+    }
+    next();
 }
 
 var yelp = new Yelp({
@@ -73,17 +84,47 @@ var yelp = new Yelp({
     token_secret: process.env.YELP_TOKEN_SECRET
 });
 
-app.get('/test', function(req, res) {
-    res.send('test');
+app.post('/addbar', isLoggedInAJAX, function(req, res) {
+    //console.log(req.body.bar);
+    var bar = req.body.bar;
+    var userId = req.user._id;
+    
+    var query = {
+        id: bar.id
+    };
+    var update = {
+        $push: {
+            going: userId
+        },
+        $setOnInsert: bar,
+        /*
+        $setOnInsert: {
+            id: bar.id,
+            display_phone: bar.display_phone,
+            image_url: bar.image_url,
+            name: bar.name,
+        }
+        */
+    };
+    var options = {
+        upsert: true
+    };
+    Bars.update(query, update, options, function(err, data) {
+        if (err) {
+            return res.json({error: 'db error'});
+        }
+        console.log(data);
+        return res.json({status: 'added user to bar'});
+    });
 });
 
 app.post('/userinfo', isLoggedInAJAX, function(req, res) {
-    console.log(req.user);
+    //console.log(req.user);
     if (req.user) {
-        console.log('--user found');
+        //console.log('--user found');
         return res.json({username: req.user.github.username});
     }
-    console.log('--user NOT found');
+    //console.log('--user NOT found');
     res.json({error: 'not logged in'});
 });
 
@@ -96,8 +137,13 @@ app.post('/test/test', function(req, res) {
     }
     yelp.search({ term: 'bar', location: loc, limit: 5})
         .then(function(data) {
-            console.log('data', data);
+            // find number of people going to each bar
+            
+            return data;
+        })
+        .then(function(data) {
             return res.json(data);
+            
         })
         .catch(function(err) {
             console.log('error', err);
@@ -106,14 +152,15 @@ app.post('/test/test', function(req, res) {
 });
 
 app.get('/auth/github',
+    saveTermMiddleware,
     passport.authenticate('github')
 );
 
 app.get('/auth/github/callback',
     passport.authenticate('github', {failureRedirect: '/login'}),
     function(req, res) {
-        res.redirect('/');
-        //res.redirect('/loggedin=true');
+        console.log('---- session term:', req.session.term);
+        res.redirect('/?term=' + req.session.term);
     }
 );
 

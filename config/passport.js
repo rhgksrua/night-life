@@ -6,13 +6,13 @@ var configAuth = require('./auth');
 
 module.exports = function (passport) {
 	passport.serializeUser(function (user, done) {
-		console.log('---passport serialize', user);
+		//console.log('---passport serialize', user);
 		done(null, user._id);
 	});
 
 	passport.deserializeUser(function (id, done) {
 		User.findById(id, function (err, user) {
-			console.log('----deserialize', user);
+			//console.log('----deserialize', user);
 			done(err, user);
 		});
 	});
@@ -22,7 +22,7 @@ module.exports = function (passport) {
 		callbackURL: configAuth.githubAuth.callbackURL
 	},
 	function (token, refreshToken, profile, done) {
-		console.log('starting mongodb... in passport');
+		//console.log('starting mongodb... in passport');
 		process.nextTick(function () {
 			User.findOne({ 'github.id': profile.id }, function (err, user) {
 				if (err) {

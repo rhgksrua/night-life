@@ -1,22 +1,27 @@
 import React from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import { getUserInfo } from './actions/actions';
+import { getUserInfo, searchTerm, getSearchResult } from './actions/actions';
 
 class App extends React.Component {
     constructor(props) {
         super(props);
     }
     componentWillMount() {
-        console.log('app mount');
+        // uses query to keep previous search term
         console.log('query', this.props.location.query);
+        const { dispatch } = this.props;
+        dispatch(getUserInfo());
+        if (this.props.location.query.term) {
+            // maybe create prevSearchTerm
+            dispatch(getSearchResult(this.props.location.query.term));
+        }
     }
     componentDidMount() {
         console.log('did mount get username');
-        const { dispatch } = this.props;
-        dispatch(getUserInfo());
     }
     render() {
+        let term = this.props.barsList.term ? `?term=${this.props.barsList.term}` : '';
         return (
             <div className='app-container'>
                 <nav>
@@ -26,7 +31,7 @@ class App extends React.Component {
                     </ul>
                     <button>Sign In</button>
                     <button>Log Out</button>
-                    <a href='/auth/github'>login from react</a>
+                    <a href={`/auth/github/${term}`}>login from react</a>
                     {this.props.userInfo.username &&
                     <p>{this.props.userInfo.username}</p>
                     }

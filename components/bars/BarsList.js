@@ -5,6 +5,7 @@ class BarsList extends React.Component {
         super(props);
     }
     handleAddBarToMe(bar) {
+        // bar exists in myList, removes bar instead.
         if (this.props.myList.some(myBar => {
             return bar.id === myBar.id;
         })) {
