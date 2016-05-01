@@ -9,8 +9,12 @@ class App extends React.Component {
     }
     componentWillMount() {
         // uses query to keep previous search term
-        console.log('query', this.props.location.query);
+        //console.log('window window', window.location.query);
+        //console.log('query', this.props.location.query);
+        //console.log('query location', this.props);
         const { dispatch } = this.props;
+        
+        // fetch user info and myList
         dispatch(getUserInfo());
         if (this.props.location.query.term) {
             // maybe create prevSearchTerm
@@ -18,7 +22,7 @@ class App extends React.Component {
         }
     }
     componentDidMount() {
-        console.log('did mount get username');
+        console.log('App: componentDidMount');
     }
     render() {
         let term = this.props.barsList.term ? `?term=${this.props.barsList.term}` : '';

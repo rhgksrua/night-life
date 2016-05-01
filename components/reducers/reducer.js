@@ -1,7 +1,7 @@
 'use strict';
 
 import { combineReducers } from 'redux';
-import { REQUEST_RESULT, ADD_BARS, ADD_BAR, REMOVE_BAR, ADD_USERNAME } from '../actions/actions';
+import { SET_USER_BAR_LIST, REQUEST_RESULT, ADD_BARS, ADD_BAR, REMOVE_BAR, ADD_USERNAME } from '../actions/actions';
 
 function barsList(state = {isFetching: false}, action) {
     switch(action.type) {
@@ -34,6 +34,8 @@ function myList(state = [], action) {
                 //console.log('reducer bar', bar.barId, action.barId);
                 return bar.id !== action.barId;
             });
+        case SET_USER_BAR_LIST:
+            return action.list;
         default:
             return state;
     }

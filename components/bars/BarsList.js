@@ -20,7 +20,14 @@ class BarsList extends React.Component {
         if (barsList.bars && barsList.bars.length > 0) {
             bars = barsList.bars.map((bar, i) => {
                 //return <li key={bar.id} onClick={this.props.addBarToMe.bind(this, bar)}>{bar.name}</li>
-                return <li key={bar.id} onClick={this.handleAddBarToMe.bind(this, bar)}>{bar.name}</li>
+                return (
+                    <li key={bar.id} onClick={this.handleAddBarToMe.bind(this, bar)}>
+                        <p>{bar.name}</p>
+                        {bar.goingNumber && 
+                        <p>{bar.goingNumber}</p>
+                        }
+                    </li>
+                );
             });
             //console.log('total bars', bars);
         } 

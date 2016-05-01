@@ -11,6 +11,10 @@ var favicon = require('serve-favicon');
 var User = require('./models/Users');
 var Bars = require('./models/Bars');
 
+mongoose.set('debug', function (coll, method, query, doc) {
+ console.log(coll + " " + method + " " + JSON.stringify(query) + " " + JSON.stringify(doc));
+});
+
 require('dotenv').load();
 
 var app = express();
@@ -94,7 +98,7 @@ app.post('/addbar', isLoggedInAJAX, function(req, res) {
     };
     var update = {
         $push: {
-            going: userId
+            going: {userId: userId}
         },
         $setOnInsert: bar,
         /*
@@ -113,25 +117,48 @@ app.post('/addbar', isLoggedInAJAX, function(req, res) {
         if (err) {
             return res.json({error: 'db error'});
         }
-        console.log(data);
+        //console.log(data);
         return res.json({status: 'added user to bar'});
     });
 });
 
 app.post('/userinfo', isLoggedInAJAX, function(req, res) {
-    //console.log(req.user);
     if (req.user) {
-        //console.log('--user found');
-        return res.json({username: req.user.github.username});
+        // look for bars user is attending
+        //console.log('--- req user id', req.user._id);
+        const query = {
+            going: { $elemMatch: { userId: req.user._id }}
+        };
+        
+        Bars.find(query, function(err, data) {
+            if (err) {
+                return res.json({error: 'db error'});
+            }
+            var newData = data.map(function(bar, i) {
+                // bar is not a plain js object. Need to convert it using toObject
+                bar = bar.toObject();
+                bar.goingNumber = bar.going.length;
+                delete bar.going;
+                return bar;
+            });
+            //console.log(data);
+            return res.json(
+                {
+                    username: req.user.github.username,
+                    data: newData
+                }
+            );
+        });
+    } else {
+        //console.log('--user NOT found');
+        res.json({error: 'not logged in'});
     }
-    //console.log('--user NOT found');
-    res.json({error: 'not logged in'});
 });
 
 app.post('/test/test', function(req, res) {
     
     var loc = req.body.loc;
-    console.log('----loc', loc, req.body);
+    //console.log('----loc', loc, req.body);
     if (!loc) {
         return res.json({error: 'no location'});
     }
@@ -139,10 +166,49 @@ app.post('/test/test', function(req, res) {
         .then(function(data) {
             // find number of people going to each bar
             
-            return data;
+            var barsIds = data.businesses.map(function(business) {
+                return business.id;
+            });
+            
+            
+            var query = {
+                id: { $in: barsIds }
+            };
+            
+            Bars.find(query, function(err, bars) {
+                var injectedBars;
+                if (err) {
+                    return {error: 'db error'};
+                }
+                //console.log(bars);
+                injectedBars = data.businesses.map(function(bar) {
+                    // bars with at least one person attending.
+                    
+                    // bar is from yelp
+                    // bars is from mongo
+                    
+                    for (var i = 0, len = bars.length; i < len; i++) {
+                        if (bars[i]['id'] === bar.id) {
+                            bar.goingNumber = bars[i].going.length;
+                            break;
+                        }
+                    }
+                    
+                    //delete bar.going;
+                    return bar;
+                });
+                console.log('--------------')
+                console.log(injectedBars);
+                console.log('--------------')
+                return res.json({businesses: injectedBars});
+            });
+            
+            
+            //console.log('---data', data.businesses);
+            //return data;
         })
         .then(function(data) {
-            return res.json(data);
+            //return res.json(data);
             
         })
         .catch(function(err) {
@@ -160,7 +226,10 @@ app.get('/auth/github/callback',
     passport.authenticate('github', {failureRedirect: '/login'}),
     function(req, res) {
         console.log('---- session term:', req.session.term);
-        res.redirect('/?term=' + req.session.term);
+        if (req.session.term) {
+            return res.redirect('/?term=' + req.session.term);
+        }
+        return res.redirect('/');
     }
 );
 

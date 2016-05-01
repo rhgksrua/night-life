@@ -27251,6 +27251,8 @@
 	                //console.log('reducer bar', bar.barId, action.barId);
 	                return bar.id !== action.barId;
 	            });
+	        case _actions.SET_USER_BAR_LIST:
+	            return action.list;
 	        default:
 	            return state;
 	    }
@@ -27289,7 +27291,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.removeBar = exports.addBarAJAX = exports.addBar = exports.getUserBarList = exports.getUserInfo = exports.getSearchResult = exports.addUsername = exports.addBars = exports.searchTerm = exports.ADD_USERNAME = exports.REMOVE_BAR = exports.ADD_BAR = exports.ADD_BARS = exports.REQUEST_RESULT = exports.SEARCH_TERM = undefined;
+	exports.removeBar = exports.addBarAJAX = exports.addBar = exports.setUserBarList = exports.getUserInfo = exports.getSearchResult = exports.addUsername = exports.addBars = exports.searchTerm = exports.SET_USER_BAR_LIST = exports.ADD_USERNAME = exports.REMOVE_BAR = exports.ADD_BAR = exports.ADD_BARS = exports.REQUEST_RESULT = exports.SEARCH_TERM = undefined;
 
 	var _isomorphicFetch = __webpack_require__(254);
 
@@ -27308,6 +27310,7 @@
 	var ADD_BAR = exports.ADD_BAR = 'ADD_BAR';
 	var REMOVE_BAR = exports.REMOVE_BAR = 'REMOVE_BAR';
 	var ADD_USERNAME = exports.ADD_USERNAME = 'ADD_USERNAME';
+	var SET_USER_BAR_LIST = exports.SET_USER_BAR_LIST = 'SET_USER_BAR_LIST';
 
 	(0, _isomorphicFetch2.default)('/test/test').then(function (data) {
 	    //console.log('test/test', data);
@@ -27377,10 +27380,14 @@
 	        }).then(function (data) {
 	            // dispatch here to set the username
 	            console.log(data);
+	            console.log('number test', data.data[0].goingNumber);
 	            if (data.error) {
 	                return data;
 	            }
 	            dispatch(addUsername(data.username));
+	            if (data.data) {
+	                dispatch(setUserBarList(data.data));
+	            }
 	            return data;
 	        }).catch(function (err) {
 	            console.warn(err);
@@ -27389,8 +27396,11 @@
 	};
 
 	// returns list of bars user is attending
-	var getUserBarList = exports.getUserBarList = function getUserBarList(list) {
-	    return {};
+	var setUserBarList = exports.setUserBarList = function setUserBarList(list) {
+	    return {
+	        type: SET_USER_BAR_LIST,
+	        list: list
+	    };
 	};
 
 	// change status to "going" in search result and user list
@@ -38109,8 +38119,12 @@
 	        key: 'componentWillMount',
 	        value: function componentWillMount() {
 	            // uses query to keep previous search term
-	            console.log('query', this.props.location.query);
+	            //console.log('window window', window.location.query);
+	            //console.log('query', this.props.location.query);
+	            //console.log('query location', this.props);
 	            var dispatch = this.props.dispatch;
+
+	            // fetch user info and myList
 
 	            dispatch((0, _actions.getUserInfo)());
 	            if (this.props.location.query.term) {
@@ -38121,7 +38135,7 @@
 	    }, {
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
-	            console.log('did mount get username');
+	            console.log('App: componentDidMount');
 	        }
 	    }, {
 	        key: 'render',
@@ -38428,7 +38442,16 @@
 	                    return _react2.default.createElement(
 	                        'li',
 	                        { key: bar.id, onClick: _this2.handleAddBarToMe.bind(_this2, bar) },
-	                        bar.name
+	                        _react2.default.createElement(
+	                            'p',
+	                            null,
+	                            bar.name
+	                        ),
+	                        bar.goingNumber && _react2.default.createElement(
+	                            'p',
+	                            null,
+	                            bar.goingNumber
+	                        )
 	                    );
 	                });
 	                //console.log('total bars', bars);

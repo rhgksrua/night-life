@@ -12,6 +12,7 @@ export const ADD_BARS = 'ADD_BARS';
 export const ADD_BAR = 'ADD_BAR';
 export const REMOVE_BAR = 'REMOVE_BAR';
 export const ADD_USERNAME = 'ADD_USERNAME';
+export const SET_USER_BAR_LIST = 'SET_USER_BAR_LIST';
 
 fetch('/test/test')
     .then((data) => {
@@ -92,10 +93,14 @@ export const getUserInfo = () => {
             .then((data) => {
                 // dispatch here to set the username
                 console.log(data);
+                console.log('number test', data.data[0].goingNumber);
                 if (data.error) {
                     return data;
                 }
                 dispatch(addUsername(data.username));
+                if (data.data) {
+                    dispatch(setUserBarList(data.data));
+                }
                 return data;
                 
             })
@@ -106,9 +111,10 @@ export const getUserInfo = () => {
 };
 
 // returns list of bars user is attending
-export const getUserBarList = (list) => {
+export const setUserBarList = (list) => {
     return {
-        
+        type: SET_USER_BAR_LIST,
+        list
     };
 };
 
