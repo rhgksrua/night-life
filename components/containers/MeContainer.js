@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Me from '../Me';
-import { removeBar } from '../actions/actions';
+import { removeBarAJAX } from '../actions/actions';
 
 function mapStateToProps(state) {
     const { myList } = state;
@@ -14,7 +14,7 @@ function mapDispatchToProps(dispatch, ownProps) {
     return {
         removeBarFromMe: id => {
             console.log('remove id', id);
-            dispatch(removeBar(id));
+            dispatch(removeBarAJAX(id));
         }
     };
     

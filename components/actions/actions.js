@@ -3,29 +3,21 @@
 // actions
 
 import fetch from 'isomorphic-fetch';
-import Yelp from 'yelp';
 
-export const SEARCH_TERM = 'bar';
+export const YELP_SEARCH_TERM = 'bar';
 
-export const REQUEST_RESULT = 'REQUEST_RESULT';
+export const SEARCH_TERM = 'SEARCH_TERM';
 export const ADD_BARS = 'ADD_BARS';
 export const ADD_BAR = 'ADD_BAR';
 export const REMOVE_BAR = 'REMOVE_BAR';
 export const ADD_USERNAME = 'ADD_USERNAME';
 export const SET_USER_BAR_LIST = 'SET_USER_BAR_LIST';
 
-fetch('/test/test')
-    .then((data) => {
-        //console.log('test/test', data);
-    })
-    .catch((err) => {
-        console.log(err);
-    });
 
 // set user search term to store
 export const searchTerm = (term) => {
     return {
-        type: REQUEST_RESULT,
+        type: SEARCH_TERM,
         term
     };
 };
@@ -65,7 +57,7 @@ export const getSearchResult = (loc) => {
                 console.log('check error', data);
                 if (data.error) {
                     dispatch(addBars([]));
-                    return data;
+                    throw new Error(data.error);
                 }
                 // data.businesses is an array.
                 dispatch(addBars(data.businesses));
@@ -92,8 +84,6 @@ export const getUserInfo = () => {
             })
             .then((data) => {
                 // dispatch here to set the username
-                console.log(data);
-                console.log('number test', data.data[0].goingNumber);
                 if (data.error) {
                     return data;
                 }
@@ -156,6 +146,36 @@ export const addBarAJAX = (bar) => {
                 console.warn(err);
             })
     };
+}
+
+export const removeBarAJAX = (barId) => {
+    return dispatch => {
+        return fetch(
+                `${window.location.protocol}//${window.location.host}/removebar`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ barId }),
+                    credentials: 'same-origin',
+                    method: 'post'
+                }
+            )
+            .then((data) => {
+                return data.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                    //return data;
+                }
+                dispatch(removeBar(barId));
+                return data;
+            })
+            .catch((err) => {
+                console.warn(err);
+            });
+    }
 }
 
 

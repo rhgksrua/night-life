@@ -11,9 +11,11 @@ var favicon = require('serve-favicon');
 var User = require('./models/Users');
 var Bars = require('./models/Bars');
 
+/*
 mongoose.set('debug', function (coll, method, query, doc) {
  console.log(coll + " " + method + " " + JSON.stringify(query) + " " + JSON.stringify(doc));
 });
+*/
 
 require('dotenv').load();
 
@@ -41,7 +43,7 @@ app.use(session({
     secret: 'nightlifesecret',
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 3600000 },
+    cookie: { maxAge: 60 * 60 * 24 * 365 },
     store: new MongoStore({
         mongooseConnection: mongoose.connection
     })
@@ -56,17 +58,7 @@ app.set('views', './templates');
 
 app.use(express.static(__dirname + '/dist'));
 
-function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    } else {
-        res.redirect('/');
-    }
-}
-
 function isLoggedInAJAX(req, res, next) {
-    //console.log('---req.user', req.user);
-    //console.log(req.isAuthenticated());
     if (req.isAuthenticated()) {
         return next();
     } else {
@@ -89,7 +81,6 @@ var yelp = new Yelp({
 });
 
 app.post('/addbar', isLoggedInAJAX, function(req, res) {
-    //console.log(req.body.bar);
     var bar = req.body.bar;
     var userId = req.user._id;
     
@@ -101,14 +92,6 @@ app.post('/addbar', isLoggedInAJAX, function(req, res) {
             going: {userId: userId}
         },
         $setOnInsert: bar,
-        /*
-        $setOnInsert: {
-            id: bar.id,
-            display_phone: bar.display_phone,
-            image_url: bar.image_url,
-            name: bar.name,
-        }
-        */
     };
     var options = {
         upsert: true
@@ -117,16 +100,31 @@ app.post('/addbar', isLoggedInAJAX, function(req, res) {
         if (err) {
             return res.json({error: 'db error'});
         }
-        //console.log(data);
         return res.json({status: 'added user to bar'});
+    });
+});
+
+app.post('/removebar', isLoggedInAJAX, function(req, res) {
+    var userId = req.user._id;
+    var barId = req.body.barId;
+    console.log('---user id', req.user._id);
+    console.log('---bar id', req.body.barId);
+    
+    var query = {
+        id: barId
+    };
+    var update = {
+        $pull: { going: { userId: userId }}
+    };
+    Bars.update(query, update, function(err, data) {
+        if (err) return res.json({error: 'db error'});
+        return res.json({status: 'removed bar from user list'});
     });
 });
 
 app.post('/userinfo', isLoggedInAJAX, function(req, res) {
     if (req.user) {
-        // look for bars user is attending
-        //console.log('--- req user id', req.user._id);
-        const query = {
+        var query = {
             going: { $elemMatch: { userId: req.user._id }}
         };
         
@@ -138,10 +136,11 @@ app.post('/userinfo', isLoggedInAJAX, function(req, res) {
                 // bar is not a plain js object. Need to convert it using toObject
                 bar = bar.toObject();
                 bar.goingNumber = bar.going.length;
-                delete bar.going;
+                if (bar.going) {
+                    delete bar.going;
+                }
                 return bar;
             });
-            //console.log(data);
             return res.json(
                 {
                     username: req.user.github.username,
@@ -150,7 +149,6 @@ app.post('/userinfo', isLoggedInAJAX, function(req, res) {
             );
         });
     } else {
-        //console.log('--user NOT found');
         res.json({error: 'not logged in'});
     }
 });
@@ -158,7 +156,6 @@ app.post('/userinfo', isLoggedInAJAX, function(req, res) {
 app.post('/test/test', function(req, res) {
     
     var loc = req.body.loc;
-    //console.log('----loc', loc, req.body);
     if (!loc) {
         return res.json({error: 'no location'});
     }
@@ -170,7 +167,6 @@ app.post('/test/test', function(req, res) {
                 return business.id;
             });
             
-            
             var query = {
                 id: { $in: barsIds }
             };
@@ -180,7 +176,6 @@ app.post('/test/test', function(req, res) {
                 if (err) {
                     return {error: 'db error'};
                 }
-                //console.log(bars);
                 injectedBars = data.businesses.map(function(bar) {
                     // bars with at least one person attending.
                     
@@ -193,23 +188,10 @@ app.post('/test/test', function(req, res) {
                             break;
                         }
                     }
-                    
-                    //delete bar.going;
                     return bar;
                 });
-                console.log('--------------')
-                console.log(injectedBars);
-                console.log('--------------')
                 return res.json({businesses: injectedBars});
             });
-            
-            
-            //console.log('---data', data.businesses);
-            //return data;
-        })
-        .then(function(data) {
-            //return res.json(data);
-            
         })
         .catch(function(err) {
             console.log('error', err);
@@ -245,7 +227,6 @@ app.get('/*', function(req, res) {
     if (req.query.loggedin) {
         return res.render('index', {loggedin: 'true'});
     }
-    //console.log(req.user);
     res.render('index');
 });
 
@@ -254,9 +235,6 @@ app.use('/api/user', userRoutes);
 app.get('/login', function(req, res) {
     res.render('login');
 });
-
-
-
 
 app.listen(port, function() {
     console.log('http://localhost:' + port);

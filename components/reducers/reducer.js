@@ -1,21 +1,46 @@
 'use strict';
 
 import { combineReducers } from 'redux';
-import { SET_USER_BAR_LIST, REQUEST_RESULT, ADD_BARS, ADD_BAR, REMOVE_BAR, ADD_USERNAME } from '../actions/actions';
+import { SET_USER_BAR_LIST, SEARCH_TERM, ADD_BARS, ADD_BAR, REMOVE_BAR, ADD_USERNAME } from '../actions/actions';
 
 function barsList(state = {isFetching: false}, action) {
     switch(action.type) {
-        case REQUEST_RESULT:
+        case SEARCH_TERM:
             return Object.assign({}, state, {
                 term: action.term,
                 isFetching: true
             });
         case ADD_BARS:
-            console.log('updating add bars', action.bars);
             return Object.assign({}, state, {
                 bars: action.bars,
                 updated: 'yes updated',
                 isFetching: false
+            });
+        case REMOVE_BAR:
+            // Decrease goingNumber from bars if removed from user list.
+            let filteredBars = state.bars.map(bar => {
+                if (bar.id === action.barId && bar.goingNumber && bar.goingNumber > 0) {
+                    bar.goingNumber--;
+                }
+                return bar;
+            });
+            return Object.assign({}, state, {
+                bars: filteredBars
+            });
+        case ADD_BAR:
+            console.log('---action bar', action.bar)
+            let newBars = state.bars.map(bar => {
+                if (bar.id === action.bar.id) {
+                    if (bar.goingNumber === undefined) {
+                        bar.goingNumber = 1;
+                    } else {
+                        bar.goingNumber++;
+                    }
+                }
+                return bar;
+            });
+            return Object.assign({}, state, {
+                bars: newBars
             });
         default:
             return state;

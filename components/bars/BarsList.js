@@ -9,7 +9,7 @@ class BarsList extends React.Component {
         if (this.props.myList.some(myBar => {
             return bar.id === myBar.id;
         })) {
-            return this.props.removeBarFromMe(bar, this.props.myList); //this.props.addBarToMe(bar);
+            return this.props.removeBarFromMe(bar.id, this.props.myList); //this.props.addBarToMe(bar);
         }
         return this.props.addBarToMe(bar);
     }
@@ -19,12 +19,13 @@ class BarsList extends React.Component {
         let myList = this.props.myList;
         if (barsList.bars && barsList.bars.length > 0) {
             bars = barsList.bars.map((bar, i) => {
-                //return <li key={bar.id} onClick={this.props.addBarToMe.bind(this, bar)}>{bar.name}</li>
+                //console.log(bar);
+                let goingNumber = (bar.goingNumber && bar.goingNumber > 0) ? bar.goingNumber : undefined;
                 return (
                     <li key={bar.id} onClick={this.handleAddBarToMe.bind(this, bar)}>
                         <p>{bar.name}</p>
-                        {bar.goingNumber && 
-                        <p>{bar.goingNumber}</p>
+                        {goingNumber &&
+                        <p>{goingNumber}</p>
                         }
                     </li>
                 );

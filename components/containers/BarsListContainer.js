@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import BarsList from '../bars/BarsList';
-import { getSearchResult, addBarAJAX, removeBar } from '../actions/actions';
+import { getSearchResult, addBarAJAX, removeBarAJAX } from '../actions/actions';
 
 class BarsListContainer extends React.Component {
     constructor(props) {
@@ -55,7 +55,7 @@ function mapDispatchToProps(dispatch, ownProps) {
         },
         removeBarFromMe: (barId, myList) => {
             console.log('removing bar from me', barId);
-            dispatch(removeBar(barId));
+            dispatch(removeBarAJAX(barId));
         }
         
     }
