@@ -16,7 +16,6 @@ class BarsList extends React.Component {
     render() {
         let bars = <li>No Results</li>;
         let barsList = this.props.barsList;
-        let myList = this.props.myList;
         if (barsList.bars && barsList.bars.length > 0) {
             bars = barsList.bars.map((bar, i) => {
                 //console.log(bar);

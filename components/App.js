@@ -1,31 +1,24 @@
 import React from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import { getUserInfo, searchTerm, getSearchResult } from './actions/actions';
+import { getUserInfo, getSearchResult, logOutAJAX } from './actions/actions';
 
 class App extends React.Component {
     constructor(props) {
         super(props);
     }
     componentWillMount() {
-        // uses query to keep previous search term
-        //console.log('window window', window.location.query);
-        //console.log('query', this.props.location.query);
-        //console.log('query location', this.props);
         const { dispatch } = this.props;
-        
-        // fetch user info and myList
-        dispatch(getUserInfo());
-        if (this.props.location.query.term) {
-            // maybe create prevSearchTerm
-            dispatch(getSearchResult(this.props.location.query.term));
-        }
+        this.props.initialize(this.props.location.query.term);
     }
-    componentDidMount() {
-        console.log('App: componentDidMount');
+    getRedirectPath() {
+        let path = this.props.location.pathname;
+        return path.replace(/\//, '');
     }
     render() {
-        let term = this.props.barsList.term ? `?term=${this.props.barsList.term}` : '';
+        let redirect = `?redirect=${encodeURIComponent(this.getRedirectPath())}`;
+        let term = this.props.barsList.term ? `&term=${encodeURIComponent(this.props.barsList.term)}` : '';
+        let query = redirect + term;
         return (
             <div className='app-container'>
                 <nav>
@@ -33,11 +26,14 @@ class App extends React.Component {
                         <li><Link to='/' activeClassName='active' onlyActiveOnIndex={true}>HOME</Link></li>
                         <li><Link to='/me' activeClassName='active'>ME</Link></li>
                     </ul>
-                    <button>Sign In</button>
-                    <button>Log Out</button>
-                    <a href={`/auth/github/${term}`}>login from react</a>
+                    {this.props.userInfo.username === undefined &&
+                        <a href={`/auth/github/${query}`}>Sign In</a>
+                    }
                     {this.props.userInfo.username &&
-                    <p>{this.props.userInfo.username}</p>
+                        <a href='#' onClick={this.props.logOut}>Log Out</a>
+                    }
+                    {this.props.userInfo.username &&
+                        <p>{this.props.userInfo.username}</p>
                     }
                 </nav>
                 {this.props.children}
@@ -56,4 +52,21 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(App);
+function mapDispatchToProps(dispatch, ownProps) {
+    return {
+        logOut: (e) => {
+            e.preventDefault();
+            dispatch(logOutAJAX());
+        },
+        initialize: (term) => {
+            dispatch(getUserInfo());
+            console.log('---ownprops', ownProps);
+            if (term) {
+                dispatch(getSearchResult(term));
+            }
+        }
+    };
+    
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

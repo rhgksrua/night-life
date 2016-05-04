@@ -73,6 +73,14 @@ function saveTermMiddleware(req, res, next) {
     next();
 }
 
+function redirectMiddleware(req, res, next) {
+    if (req.query.redirect) {
+        req.session.redirect = req.query.redirect;
+    }
+    console.log('---- redirect', req.session.redirect);
+    next();
+}
+
 var yelp = new Yelp({
     consumer_key: process.env.YELP_KEY,
     consumer_secret: process.env.YELP_SECRET,
@@ -201,23 +209,34 @@ app.post('/test/test', function(req, res) {
 
 app.get('/auth/github',
     saveTermMiddleware,
+    redirectMiddleware,
     passport.authenticate('github')
 );
 
 app.get('/auth/github/callback',
     passport.authenticate('github', {failureRedirect: '/login'}),
     function(req, res) {
-        console.log('---- session term:', req.session.term);
-        if (req.session.term) {
-            return res.redirect('/?term=' + req.session.term);
+        var path = '/';
+        
+        if (req.session.redirect) {
+            path = path + req.session.redirect + '/';
         }
-        return res.redirect('/');
+        
+        console.log('---- term', req.session.term)
+        if (req.session.term) {
+            //return res.redirect('/?term=' + req.session.term);
+            path = path + '?term=' + encodeURIComponent(req.session.term);
+        }
+        // Reset redirect from session
+        req.session.redirect = '';
+        req.session.term = '';
+        return res.redirect(path);
     }
 );
 
-app.get('/logout', function(req, res) {
+app.post('/logout', isLoggedInAJAX, function(req, res) {
     req.logout();
-    res.redirect('/?logout=' + encodeURIComponent('true'));
+    res.json({status: 'logged out'});
 });
 
 app.get('/*', function(req, res) {

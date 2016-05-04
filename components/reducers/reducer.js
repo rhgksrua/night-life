@@ -1,7 +1,15 @@
 'use strict';
 
 import { combineReducers } from 'redux';
-import { SET_USER_BAR_LIST, SEARCH_TERM, ADD_BARS, ADD_BAR, REMOVE_BAR, ADD_USERNAME } from '../actions/actions';
+import { 
+    SET_USER_BAR_LIST, 
+    SEARCH_TERM, 
+    ADD_BARS, 
+    ADD_BAR, 
+    REMOVE_BAR, 
+    ADD_USERNAME,
+    LOG_OUT
+} from '../actions/actions';
 
 function barsList(state = {isFetching: false}, action) {
     switch(action.type) {
@@ -61,6 +69,8 @@ function myList(state = [], action) {
             });
         case SET_USER_BAR_LIST:
             return action.list;
+        case LOG_OUT:
+            return [];
         default:
             return state;
     }
@@ -72,6 +82,8 @@ function userInfo(state = {}, action) {
             return Object.assign({}, state, {
                 username: action.username
             });
+        case LOG_OUT:
+            return {};
         default:
             return state;
     }

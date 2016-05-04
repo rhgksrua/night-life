@@ -5,13 +5,13 @@
 import fetch from 'isomorphic-fetch';
 
 export const YELP_SEARCH_TERM = 'bar';
-
 export const SEARCH_TERM = 'SEARCH_TERM';
 export const ADD_BARS = 'ADD_BARS';
 export const ADD_BAR = 'ADD_BAR';
 export const REMOVE_BAR = 'REMOVE_BAR';
 export const ADD_USERNAME = 'ADD_USERNAME';
 export const SET_USER_BAR_LIST = 'SET_USER_BAR_LIST';
+export const LOG_OUT = 'LOG_OUT';
 
 
 // set user search term to store
@@ -27,14 +27,14 @@ export const addBars = (bars) => {
         type: ADD_BARS,
         bars
     };
-}
+};
 
 export const addUsername = username => {
     return {
         type: ADD_USERNAME,
         username
-    }
-}
+    };
+};
 
 // returns yelp api result
 export const getSearchResult = (loc) => {
@@ -65,7 +65,7 @@ export const getSearchResult = (loc) => {
                 return data;
             }).catch((err) => {
                 console.warn(err);
-            })
+            });
     };
 };
 
@@ -85,19 +85,18 @@ export const getUserInfo = () => {
             .then((data) => {
                 // dispatch here to set the username
                 if (data.error) {
-                    return data;
+                    throw new Error(data.error);
                 }
                 dispatch(addUsername(data.username));
                 if (data.data) {
                     dispatch(setUserBarList(data.data));
                 }
                 return data;
-                
             })
             .catch((err) => {
                 console.warn(err);
-            })
-    }
+            });
+    };
 };
 
 // returns list of bars user is attending
@@ -129,7 +128,6 @@ export const addBarAJAX = (bar) => {
                     credentials: 'same-origin',
                     method: 'post'
                 }
-                
             )
             .then((data) => {
                 return data.json();
@@ -144,9 +142,9 @@ export const addBarAJAX = (bar) => {
             .catch((err) => {
                 //dispatch(addBar(bar));
                 console.warn(err);
-            })
+            });
     };
-}
+};
 
 export const removeBarAJAX = (barId) => {
     return dispatch => {
@@ -175,8 +173,8 @@ export const removeBarAJAX = (barId) => {
             .catch((err) => {
                 console.warn(err);
             });
-    }
-}
+    };
+};
 
 
 // change status to "not going" in search result and user list
@@ -185,6 +183,39 @@ export const removeBar = (barId) => {
         type: REMOVE_BAR,
         barId
     };
-    
 };
 
+export const logOutAJAX = () => {
+    return dispatch => {
+        return fetch(
+                `${window.location.protocol}//${window.location.host}/logout`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'same-origin',
+                    method: 'post'
+                }
+            )
+            .then((data) => {
+                return data.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                    //return data;
+                }
+                dispatch(logOut());
+                return data;
+            })
+            .catch((err) => {
+                console.warn(err);
+            });
+    };
+};
+
+export const logOut = () => {
+    return {
+        type: LOG_OUT,
+    };
+}

@@ -71,49 +71,44 @@
 
 	var _redux = __webpack_require__(233);
 
-	var _reduxThunk = __webpack_require__(318);
+	var _reduxThunk = __webpack_require__(256);
 
 	var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 
-	var _reduxLogger = __webpack_require__(319);
+	var _reduxLogger = __webpack_require__(257);
 
 	var _reduxLogger2 = _interopRequireDefault(_reduxLogger);
 
 	var _actions = __webpack_require__(253);
 
-	var _App = __webpack_require__(320);
+	var _App = __webpack_require__(258);
 
 	var _App2 = _interopRequireDefault(_App);
 
-	var _Home = __webpack_require__(321);
+	var _Home = __webpack_require__(259);
 
 	var _Home2 = _interopRequireDefault(_Home);
 
-	var _Me = __webpack_require__(325);
+	var _Me = __webpack_require__(263);
 
 	var _Me2 = _interopRequireDefault(_Me);
 
-	var _MeContainer = __webpack_require__(326);
+	var _MeContainer = __webpack_require__(264);
 
 	var _MeContainer2 = _interopRequireDefault(_MeContainer);
 
-	var _NoMatch = __webpack_require__(327);
+	var _NoMatch = __webpack_require__(265);
 
 	var _NoMatch2 = _interopRequireDefault(_NoMatch);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	// Adding scss
+	__webpack_require__(266);
+
 	var loggerMiddleware = (0, _reduxLogger2.default)();
 
 	var store = (0, _redux.createStore)(_reducer2.default, (0, _redux.applyMiddleware)(_reduxThunk2.default, loggerMiddleware));
-
-	/*
-	store.dispatch(searchTerm('this is location'));
-	store.dispatch(getSearchResult('new york'))
-	    .then(() => {
-	        console.log('store getstate', store.getState());
-	    })
-	*/
 
 	_reactDom2.default.render(_react2.default.createElement(
 	    _reactRedux.Provider,
@@ -27278,6 +27273,8 @@
 	            });
 	        case _actions.SET_USER_BAR_LIST:
 	            return action.list;
+	        case _actions.LOG_OUT:
+	            return [];
 	        default:
 	            return state;
 	    }
@@ -27292,6 +27289,8 @@
 	            return Object.assign({}, state, {
 	                username: action.username
 	            });
+	        case _actions.LOG_OUT:
+	            return {};
 	        default:
 	            return state;
 	    }
@@ -27316,7 +27315,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.removeBar = exports.removeBarAJAX = exports.addBarAJAX = exports.addBar = exports.setUserBarList = exports.getUserInfo = exports.getSearchResult = exports.addUsername = exports.addBars = exports.searchTerm = exports.SET_USER_BAR_LIST = exports.ADD_USERNAME = exports.REMOVE_BAR = exports.ADD_BAR = exports.ADD_BARS = exports.SEARCH_TERM = exports.YELP_SEARCH_TERM = undefined;
+	exports.logOut = exports.logOutAJAX = exports.removeBar = exports.removeBarAJAX = exports.addBarAJAX = exports.addBar = exports.setUserBarList = exports.getUserInfo = exports.getSearchResult = exports.addUsername = exports.addBars = exports.searchTerm = exports.LOG_OUT = exports.SET_USER_BAR_LIST = exports.ADD_USERNAME = exports.REMOVE_BAR = exports.ADD_BAR = exports.ADD_BARS = exports.SEARCH_TERM = exports.YELP_SEARCH_TERM = undefined;
 
 	var _isomorphicFetch = __webpack_require__(254);
 
@@ -27325,13 +27324,13 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var YELP_SEARCH_TERM = exports.YELP_SEARCH_TERM = 'bar';
-
 	var SEARCH_TERM = exports.SEARCH_TERM = 'SEARCH_TERM';
 	var ADD_BARS = exports.ADD_BARS = 'ADD_BARS';
 	var ADD_BAR = exports.ADD_BAR = 'ADD_BAR';
 	var REMOVE_BAR = exports.REMOVE_BAR = 'REMOVE_BAR';
 	var ADD_USERNAME = exports.ADD_USERNAME = 'ADD_USERNAME';
 	var SET_USER_BAR_LIST = exports.SET_USER_BAR_LIST = 'SET_USER_BAR_LIST';
+	var LOG_OUT = exports.LOG_OUT = 'LOG_OUT';
 
 	// set user search term to store
 	var searchTerm = exports.searchTerm = function searchTerm(term) {
@@ -27395,7 +27394,7 @@
 	        }).then(function (data) {
 	            // dispatch here to set the username
 	            if (data.error) {
-	                return data;
+	                throw new Error(data.error);
 	            }
 	            dispatch(addUsername(data.username));
 	            if (data.data) {
@@ -27479,6 +27478,35 @@
 	    return {
 	        type: REMOVE_BAR,
 	        barId: barId
+	    };
+	};
+
+	var logOutAJAX = exports.logOutAJAX = function logOutAJAX() {
+	    return function (dispatch) {
+	        return (0, _isomorphicFetch2.default)(window.location.protocol + '//' + window.location.host + '/logout', {
+	            headers: {
+	                'Content-Type': 'application/json'
+	            },
+	            credentials: 'same-origin',
+	            method: 'post'
+	        }).then(function (data) {
+	            return data.json();
+	        }).then(function (data) {
+	            if (data.error) {
+	                throw new Error(data.error);
+	                //return data;
+	            }
+	            dispatch(logOut());
+	            return data;
+	        }).catch(function (err) {
+	            console.warn(err);
+	        });
+	    };
+	};
+
+	var logOut = exports.logOut = function logOut() {
+	    return {
+	        type: LOG_OUT
 	    };
 	};
 
@@ -27890,69 +27918,7 @@
 
 
 /***/ },
-/* 256 */,
-/* 257 */,
-/* 258 */,
-/* 259 */,
-/* 260 */,
-/* 261 */,
-/* 262 */,
-/* 263 */,
-/* 264 */,
-/* 265 */,
-/* 266 */,
-/* 267 */,
-/* 268 */,
-/* 269 */,
-/* 270 */,
-/* 271 */,
-/* 272 */,
-/* 273 */,
-/* 274 */,
-/* 275 */,
-/* 276 */,
-/* 277 */,
-/* 278 */,
-/* 279 */,
-/* 280 */,
-/* 281 */,
-/* 282 */,
-/* 283 */,
-/* 284 */,
-/* 285 */,
-/* 286 */,
-/* 287 */,
-/* 288 */,
-/* 289 */,
-/* 290 */,
-/* 291 */,
-/* 292 */,
-/* 293 */,
-/* 294 */,
-/* 295 */,
-/* 296 */,
-/* 297 */,
-/* 298 */,
-/* 299 */,
-/* 300 */,
-/* 301 */,
-/* 302 */,
-/* 303 */,
-/* 304 */,
-/* 305 */,
-/* 306 */,
-/* 307 */,
-/* 308 */,
-/* 309 */,
-/* 310 */,
-/* 311 */,
-/* 312 */,
-/* 313 */,
-/* 314 */,
-/* 315 */,
-/* 316 */,
-/* 317 */,
-/* 318 */
+/* 256 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -27975,7 +27941,7 @@
 	}
 
 /***/ },
-/* 319 */
+/* 257 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -28208,7 +28174,7 @@
 	module.exports = createLogger;
 
 /***/ },
-/* 320 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28249,29 +28215,22 @@
 	    _createClass(App, [{
 	        key: 'componentWillMount',
 	        value: function componentWillMount() {
-	            // uses query to keep previous search term
-	            //console.log('window window', window.location.query);
-	            //console.log('query', this.props.location.query);
-	            //console.log('query location', this.props);
 	            var dispatch = this.props.dispatch;
 
-	            // fetch user info and myList
-
-	            dispatch((0, _actions.getUserInfo)());
-	            if (this.props.location.query.term) {
-	                // maybe create prevSearchTerm
-	                dispatch((0, _actions.getSearchResult)(this.props.location.query.term));
-	            }
+	            this.props.initialize(this.props.location.query.term);
 	        }
 	    }, {
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
-	            console.log('App: componentDidMount');
+	        key: 'getRedirectPath',
+	        value: function getRedirectPath() {
+	            var path = this.props.location.pathname;
+	            return path.replace(/\//, '');
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var term = this.props.barsList.term ? '?term=' + this.props.barsList.term : '';
+	            var redirect = '?redirect=' + encodeURIComponent(this.getRedirectPath());
+	            var term = this.props.barsList.term ? '&term=' + encodeURIComponent(this.props.barsList.term) : '';
+	            var query = redirect + term;
 	            return _react2.default.createElement(
 	                'div',
 	                { className: 'app-container' },
@@ -28300,20 +28259,15 @@
 	                            )
 	                        )
 	                    ),
-	                    _react2.default.createElement(
-	                        'button',
-	                        null,
+	                    this.props.userInfo.username === undefined && _react2.default.createElement(
+	                        'a',
+	                        { href: '/auth/github/' + query },
 	                        'Sign In'
 	                    ),
-	                    _react2.default.createElement(
-	                        'button',
-	                        null,
-	                        'Log Out'
-	                    ),
-	                    _react2.default.createElement(
+	                    this.props.userInfo.username && _react2.default.createElement(
 	                        'a',
-	                        { href: '/auth/github/' + term },
-	                        'login from react'
+	                        { href: '#', onClick: this.props.logOut },
+	                        'Log Out'
 	                    ),
 	                    this.props.userInfo.username && _react2.default.createElement(
 	                        'p',
@@ -28341,10 +28295,26 @@
 	    };
 	}
 
-	exports.default = (0, _reactRedux.connect)(mapStateToProps)(App);
+	function mapDispatchToProps(dispatch, ownProps) {
+	    return {
+	        logOut: function logOut(e) {
+	            e.preventDefault();
+	            dispatch((0, _actions.logOutAJAX)());
+	        },
+	        initialize: function initialize(term) {
+	            dispatch((0, _actions.getUserInfo)());
+	            console.log('---ownprops', ownProps);
+	            if (term) {
+	                dispatch((0, _actions.getSearchResult)(term));
+	            }
+	        }
+	    };
+	}
+
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(App);
 
 /***/ },
-/* 321 */
+/* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28359,11 +28329,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _BarsListContainer = __webpack_require__(322);
+	var _BarsListContainer = __webpack_require__(260);
 
 	var _BarsListContainer2 = _interopRequireDefault(_BarsListContainer);
 
-	var _SearchBars = __webpack_require__(324);
+	var _SearchBars = __webpack_require__(262);
 
 	var _SearchBars2 = _interopRequireDefault(_SearchBars);
 
@@ -28407,7 +28377,7 @@
 	exports.default = Home;
 
 /***/ },
-/* 322 */
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28416,71 +28386,19 @@
 	    value: true
 	});
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 	var _react = __webpack_require__(2);
 
 	var _react2 = _interopRequireDefault(_react);
 
 	var _reactRedux = __webpack_require__(226);
 
-	var _BarsList = __webpack_require__(323);
+	var _BarsList = __webpack_require__(261);
 
 	var _BarsList2 = _interopRequireDefault(_BarsList);
 
 	var _actions = __webpack_require__(253);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var BarsListContainer = function (_React$Component) {
-	    _inherits(BarsListContainer, _React$Component);
-
-	    function BarsListContainer(props) {
-	        _classCallCheck(this, BarsListContainer);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(BarsListContainer).call(this, props));
-	    }
-
-	    _createClass(BarsListContainer, [{
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {}
-	        /*
-	        this.props.dispatch(getSearchResult('new york'))
-	            .then(() => {
-	                console.log('store getstate', this.props.store);
-	            });
-	        */
-
-
-	        /*
-	        addBarToMe(id) {
-	            const { dispatch } = this.props;
-	            dispatch(addBar(id));
-	        }
-	        */
-
-	        /*
-	        render() {
-	            const { barsList, myList } = this.props;
-	            return (
-	                <BarsList term={barsList.term} 
-	                          bars={barsList.bars} 
-	                          isFetching={barsList.isFetching} 
-	                />
-	            );
-	        }
-	        */
-
-	    }]);
-
-	    return BarsListContainer;
-	}(_react2.default.Component);
 
 	function mapStateToProps(state) {
 	    var barsList = state.barsList;
@@ -28512,7 +28430,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_BarsList2.default);
 
 /***/ },
-/* 323 */
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28566,7 +28484,6 @@
 	                'No Results'
 	            );
 	            var barsList = this.props.barsList;
-	            var myList = this.props.myList;
 	            if (barsList.bars && barsList.bars.length > 0) {
 	                bars = barsList.bars.map(function (bar, i) {
 	                    //console.log(bar);
@@ -28618,7 +28535,7 @@
 	exports.default = BarsList;
 
 /***/ },
-/* 324 */
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28721,7 +28638,7 @@
 	exports.default = SearchBars;
 
 /***/ },
-/* 325 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28797,7 +28714,7 @@
 	exports.default = Me;
 
 /***/ },
-/* 326 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28812,7 +28729,7 @@
 
 	var _reactRedux = __webpack_require__(226);
 
-	var _Me = __webpack_require__(325);
+	var _Me = __webpack_require__(263);
 
 	var _Me2 = _interopRequireDefault(_Me);
 
@@ -28840,7 +28757,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_Me2.default);
 
 /***/ },
-/* 327 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28891,6 +28808,354 @@
 	}(_react2.default.Component);
 
 	exports.default = NoMatch;
+
+/***/ },
+/* 266 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(267);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(269)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/sass-loader/index.js!./index.scss", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/sass-loader/index.js!./index.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 267 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(268)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "body {\n  background-color: #EBEBEB;\n  color: #971D1D; }\n\n#app {\n  color: red; }\n  #app .app-container {\n    color: blue; }\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 268 */
+/***/ function(module, exports) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	// css base code, injected by the css-loader
+	module.exports = function() {
+		var list = [];
+
+		// return the list of modules as css string
+		list.toString = function toString() {
+			var result = [];
+			for(var i = 0; i < this.length; i++) {
+				var item = this[i];
+				if(item[2]) {
+					result.push("@media " + item[2] + "{" + item[1] + "}");
+				} else {
+					result.push(item[1]);
+				}
+			}
+			return result.join("");
+		};
+
+		// import a list of modules into the list
+		list.i = function(modules, mediaQuery) {
+			if(typeof modules === "string")
+				modules = [[null, modules, ""]];
+			var alreadyImportedModules = {};
+			for(var i = 0; i < this.length; i++) {
+				var id = this[i][0];
+				if(typeof id === "number")
+					alreadyImportedModules[id] = true;
+			}
+			for(i = 0; i < modules.length; i++) {
+				var item = modules[i];
+				// skip already imported module
+				// this implementation is not 100% perfect for weird media query combinations
+				//  when a module is imported multiple times with different media queries.
+				//  I hope this will never occur (Hey this way we have smaller bundles)
+				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+					if(mediaQuery && !item[2]) {
+						item[2] = mediaQuery;
+					} else if(mediaQuery) {
+						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+					}
+					list.push(item);
+				}
+			}
+		};
+		return list;
+	};
+
+
+/***/ },
+/* 269 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	var stylesInDom = {},
+		memoize = function(fn) {
+			var memo;
+			return function () {
+				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+				return memo;
+			};
+		},
+		isOldIE = memoize(function() {
+			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
+		}),
+		getHeadElement = memoize(function () {
+			return document.head || document.getElementsByTagName("head")[0];
+		}),
+		singletonElement = null,
+		singletonCounter = 0,
+		styleElementsInsertedAtTop = [];
+
+	module.exports = function(list, options) {
+		if(false) {
+			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+		}
+
+		options = options || {};
+		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+		// tags it will allow on a page
+		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+
+		// By default, add <style> tags to the bottom of <head>.
+		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+
+		var styles = listToStyles(list);
+		addStylesToDom(styles, options);
+
+		return function update(newList) {
+			var mayRemove = [];
+			for(var i = 0; i < styles.length; i++) {
+				var item = styles[i];
+				var domStyle = stylesInDom[item.id];
+				domStyle.refs--;
+				mayRemove.push(domStyle);
+			}
+			if(newList) {
+				var newStyles = listToStyles(newList);
+				addStylesToDom(newStyles, options);
+			}
+			for(var i = 0; i < mayRemove.length; i++) {
+				var domStyle = mayRemove[i];
+				if(domStyle.refs === 0) {
+					for(var j = 0; j < domStyle.parts.length; j++)
+						domStyle.parts[j]();
+					delete stylesInDom[domStyle.id];
+				}
+			}
+		};
+	}
+
+	function addStylesToDom(styles, options) {
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			if(domStyle) {
+				domStyle.refs++;
+				for(var j = 0; j < domStyle.parts.length; j++) {
+					domStyle.parts[j](item.parts[j]);
+				}
+				for(; j < item.parts.length; j++) {
+					domStyle.parts.push(addStyle(item.parts[j], options));
+				}
+			} else {
+				var parts = [];
+				for(var j = 0; j < item.parts.length; j++) {
+					parts.push(addStyle(item.parts[j], options));
+				}
+				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+			}
+		}
+	}
+
+	function listToStyles(list) {
+		var styles = [];
+		var newStyles = {};
+		for(var i = 0; i < list.length; i++) {
+			var item = list[i];
+			var id = item[0];
+			var css = item[1];
+			var media = item[2];
+			var sourceMap = item[3];
+			var part = {css: css, media: media, sourceMap: sourceMap};
+			if(!newStyles[id])
+				styles.push(newStyles[id] = {id: id, parts: [part]});
+			else
+				newStyles[id].parts.push(part);
+		}
+		return styles;
+	}
+
+	function insertStyleElement(options, styleElement) {
+		var head = getHeadElement();
+		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+		if (options.insertAt === "top") {
+			if(!lastStyleElementInsertedAtTop) {
+				head.insertBefore(styleElement, head.firstChild);
+			} else if(lastStyleElementInsertedAtTop.nextSibling) {
+				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+			} else {
+				head.appendChild(styleElement);
+			}
+			styleElementsInsertedAtTop.push(styleElement);
+		} else if (options.insertAt === "bottom") {
+			head.appendChild(styleElement);
+		} else {
+			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+		}
+	}
+
+	function removeStyleElement(styleElement) {
+		styleElement.parentNode.removeChild(styleElement);
+		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+		if(idx >= 0) {
+			styleElementsInsertedAtTop.splice(idx, 1);
+		}
+	}
+
+	function createStyleElement(options) {
+		var styleElement = document.createElement("style");
+		styleElement.type = "text/css";
+		insertStyleElement(options, styleElement);
+		return styleElement;
+	}
+
+	function createLinkElement(options) {
+		var linkElement = document.createElement("link");
+		linkElement.rel = "stylesheet";
+		insertStyleElement(options, linkElement);
+		return linkElement;
+	}
+
+	function addStyle(obj, options) {
+		var styleElement, update, remove;
+
+		if (options.singleton) {
+			var styleIndex = singletonCounter++;
+			styleElement = singletonElement || (singletonElement = createStyleElement(options));
+			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+		} else if(obj.sourceMap &&
+			typeof URL === "function" &&
+			typeof URL.createObjectURL === "function" &&
+			typeof URL.revokeObjectURL === "function" &&
+			typeof Blob === "function" &&
+			typeof btoa === "function") {
+			styleElement = createLinkElement(options);
+			update = updateLink.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+				if(styleElement.href)
+					URL.revokeObjectURL(styleElement.href);
+			};
+		} else {
+			styleElement = createStyleElement(options);
+			update = applyToTag.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+			};
+		}
+
+		update(obj);
+
+		return function updateStyle(newObj) {
+			if(newObj) {
+				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+					return;
+				update(obj = newObj);
+			} else {
+				remove();
+			}
+		};
+	}
+
+	var replaceText = (function () {
+		var textStore = [];
+
+		return function (index, replacement) {
+			textStore[index] = replacement;
+			return textStore.filter(Boolean).join('\n');
+		};
+	})();
+
+	function applyToSingletonTag(styleElement, index, remove, obj) {
+		var css = remove ? "" : obj.css;
+
+		if (styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = replaceText(index, css);
+		} else {
+			var cssNode = document.createTextNode(css);
+			var childNodes = styleElement.childNodes;
+			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+			if (childNodes.length) {
+				styleElement.insertBefore(cssNode, childNodes[index]);
+			} else {
+				styleElement.appendChild(cssNode);
+			}
+		}
+	}
+
+	function applyToTag(styleElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+
+		if(media) {
+			styleElement.setAttribute("media", media)
+		}
+
+		if(styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = css;
+		} else {
+			while(styleElement.firstChild) {
+				styleElement.removeChild(styleElement.firstChild);
+			}
+			styleElement.appendChild(document.createTextNode(css));
+		}
+	}
+
+	function updateLink(linkElement, obj) {
+		var css = obj.css;
+		var sourceMap = obj.sourceMap;
+
+		if(sourceMap) {
+			// http://stackoverflow.com/a/26603875
+			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+		}
+
+		var blob = new Blob([css], { type: "text/css" });
+
+		var oldSrc = linkElement.href;
+
+		linkElement.href = URL.createObjectURL(blob);
+
+		if(oldSrc)
+			URL.revokeObjectURL(oldSrc);
+	}
+
 
 /***/ }
 /******/ ]);
