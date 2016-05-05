@@ -28,7 +28,7 @@ class BarsList extends React.Component {
                     <li className={bar.userGoing === true ? 'bar going' : 'bar'} key={bar.id} onClick={this.handleAddBarToMe.bind(this, bar)}>
                         <p className='bar-image'><img src={bar.image_url}/></p>
                         <div className='bar-info'>
-                            <p><a href={bar.url}>{bar.name}</a></p>
+                            <h3><a href={bar.url}>{bar.name}</a></h3>
                             {goingNumber &&
                             <p>Attending: {goingNumber}</p>
                             }
@@ -46,9 +46,6 @@ class BarsList extends React.Component {
         }
         return (
             <div>
-                {barsList.term &&
-                    <h1>{barsList.term}</h1>
-                }
                 <ul className='bars-list'>
                     {bars}
                 </ul>

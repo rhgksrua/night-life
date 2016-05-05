@@ -11,7 +11,7 @@ import {
     LOG_OUT
 } from '../actions/actions';
 
-function barsList(state = {isFetching: false}, action) {
+function barsList(state = {bars: [], isFetching: false}, action) {
     switch(action.type) {
         case SEARCH_TERM:
             return Object.assign({}, state, {

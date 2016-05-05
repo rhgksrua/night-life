@@ -27211,7 +27211,7 @@
 	var _actions = __webpack_require__(253);
 
 	function barsList() {
-	    var state = arguments.length <= 0 || arguments[0] === undefined ? { isFetching: false } : arguments[0];
+	    var state = arguments.length <= 0 || arguments[0] === undefined ? { bars: [], isFetching: false } : arguments[0];
 	    var action = arguments[1];
 
 	    switch (action.type) {
@@ -28380,11 +28380,6 @@
 	            return _react2.default.createElement(
 	                'div',
 	                { className: 'home-container' },
-	                _react2.default.createElement(
-	                    'h1',
-	                    null,
-	                    'Night Life'
-	                ),
 	                _react2.default.createElement(_SearchBars2.default, null),
 	                _react2.default.createElement(_BarsListContainer2.default, null)
 	            );
@@ -28524,7 +28519,7 @@
 	                            'div',
 	                            { className: 'bar-info' },
 	                            _react2.default.createElement(
-	                                'p',
+	                                'h3',
 	                                null,
 	                                _react2.default.createElement(
 	                                    'a',
@@ -28565,11 +28560,6 @@
 	            return _react2.default.createElement(
 	                'div',
 	                null,
-	                barsList.term && _react2.default.createElement(
-	                    'h1',
-	                    null,
-	                    barsList.term
-	                ),
 	                _react2.default.createElement(
 	                    'ul',
 	                    { className: 'bars-list' },
@@ -28654,7 +28644,7 @@
 
 	            return _react2.default.createElement(
 	                'div',
-	                null,
+	                { className: 'search-container' },
 	                _react2.default.createElement(
 	                    'form',
 	                    { onSubmit: this.handleSubmit.bind(this) },
@@ -28726,21 +28716,50 @@
 	            var _this2 = this;
 
 	            var myList = this.props.myList;
-	            var myBarsList = void 0;
+	            var myBarsList = _react2.default.createElement(
+	                'li',
+	                null,
+	                'Staying home...'
+	            );
 	            if (myList && myList.length > 0) {
 	                myBarsList = myList.map(function (bar, i) {
 	                    return _react2.default.createElement(
 	                        'li',
-	                        { key: i },
+	                        { className: 'bar', key: bar.id },
 	                        _react2.default.createElement(
 	                            'p',
-	                            null,
-	                            bar.name
+	                            { className: 'bar-image' },
+	                            _react2.default.createElement('img', { src: bar.image_url })
+	                        ),
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'bar-info' },
+	                            _react2.default.createElement(
+	                                'h3',
+	                                null,
+	                                _react2.default.createElement(
+	                                    'a',
+	                                    { href: bar.url },
+	                                    bar.name
+	                                )
+	                            ),
+	                            _react2.default.createElement(
+	                                'p',
+	                                null,
+	                                bar.snippet_text
+	                            ),
+	                            _react2.default.createElement(
+	                                'p',
+	                                null,
+	                                'Review Count: ',
+	                                bar.review_count
+	                            ),
+	                            _react2.default.createElement('img', { src: bar.rating_img_url })
 	                        ),
 	                        _react2.default.createElement(
 	                            'button',
 	                            { onClick: _this2.props.removeBarFromMe.bind(_this2, bar.id) },
-	                            'remove'
+	                            'Not Going'
 	                        )
 	                    );
 	                });
@@ -28749,11 +28768,10 @@
 	                'div',
 	                { className: 'me-container' },
 	                _react2.default.createElement(
-	                    'p',
-	                    null,
-	                    'Lists all the bars you are attending'
-	                ),
-	                myBarsList
+	                    'ul',
+	                    { className: 'bars-list' },
+	                    myBarsList
+	                )
 	            );
 	        }
 	    }]);
@@ -28894,7 +28912,7 @@
 
 
 	// module
-	exports.push([module.id, "/* http://meyerweb.com/eric/tools/css/reset/ \n   v2.0 | 20110126\n   License: none (public domain)\n*/\nhtml, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\nbody {\n  font-family: 'Roboto', sans-serif; }\n\n.app-container nav {\n  height: 100px;\n  width: 100%;\n  line-height: 100px;\n  white-space: nowrap;\n  background-color: #00796B;\n  color: #FFFFFF; }\n  .app-container nav h1 {\n    padding-left: 10px;\n    font-size: 2em;\n    float: left; }\n  .app-container nav ul {\n    float: right; }\n    .app-container nav ul li {\n      display: inline-block;\n      width: 80px;\n      text-align: center; }\n      .app-container nav ul li a {\n        color: #FFFFFF;\n        text-decoration: none; }\n      .app-container nav ul li a.active {\n        color: #FFC107;\n        text-decoration: none; }\n      .app-container nav ul li #username {\n        display: inline-block;\n        color: #FFFFFF; }\n    .app-container nav ul li.tab {\n      font-size: 1.3em; }\n\n.home-container .bars-list {\n  width: 500px;\n  margin-right: auto;\n  margin-left: auto; }\n  .home-container .bars-list .bar {\n    width: 100%;\n    border: 1px solid #B2DFDB;\n    padding: 5px; }\n    .home-container .bars-list .bar .bar-image {\n      float: left;\n      width: 50px; }\n    .home-container .bars-list .bar .bar-info {\n      padding: 5px 5px 5px 55px;\n      overflow: auto;\n      height: auto; }\n\n.going {\n  background-color: #B2DFDB; }\n", ""]);
+	exports.push([module.id, "/* http://meyerweb.com/eric/tools/css/reset/ \n   v2.0 | 20110126\n   License: none (public domain)\n*/\nhtml, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\nbody {\n  font-family: 'Roboto', sans-serif; }\n\n.app-container {\n  margin-right: auto;\n  margin-left: auto; }\n  .app-container nav {\n    height: 100px;\n    width: 100%;\n    line-height: 100px;\n    white-space: nowrap;\n    background-color: #00796B;\n    color: #FFFFFF;\n    margin-bottom: 30px; }\n    .app-container nav h1 {\n      padding-left: 10px;\n      font-size: 2em;\n      float: left; }\n    .app-container nav ul {\n      float: right; }\n      .app-container nav ul li {\n        display: inline-block;\n        width: 80px;\n        text-align: center; }\n        .app-container nav ul li a {\n          color: #FFFFFF;\n          text-decoration: none; }\n        .app-container nav ul li a.active {\n          color: #FFC107;\n          text-decoration: none; }\n        .app-container nav ul li #username {\n          display: inline-block;\n          color: #FFFFFF; }\n      .app-container nav ul li.tab {\n        font-size: 1.3em; }\n\n.home-container {\n  text-align: center;\n  max-width: 500px;\n  margin-right: auto;\n  margin-left: auto; }\n  .home-container .bars-list {\n    margin-right: auto;\n    margin-left: auto; }\n    .home-container .bars-list .bar {\n      cursor: pointer;\n      box-sizing: border-box;\n      border: 1px solid #B6B6B6;\n      padding: 5px;\n      margin: 6px;\n      box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.14); }\n      .home-container .bars-list .bar h3 {\n        font-size: 1.1em; }\n      .home-container .bars-list .bar .bar-image {\n        float: left;\n        width: 50px; }\n      .home-container .bars-list .bar .bar-info {\n        padding: 5px 5px 5px 55px;\n        overflow: auto;\n        height: auto; }\n\n.me-container {\n  text-align: center;\n  max-width: 500px;\n  margin-right: auto;\n  margin-left: auto; }\n  .me-container .bars-list {\n    margin-right: auto;\n    margin-left: auto; }\n    .me-container .bars-list .bar {\n      box-sizing: border-box;\n      border: 1px solid #B6B6B6;\n      padding: 5px;\n      margin: 6px;\n      box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.14); }\n      .me-container .bars-list .bar h3 {\n        font-size: 1.1em; }\n      .me-container .bars-list .bar .bar-image {\n        float: left;\n        width: 50px; }\n      .me-container .bars-list .bar .bar-info {\n        padding: 5px 5px 5px 55px;\n        overflow: auto;\n        height: auto; }\n      .me-container .bars-list .bar button {\n        cursor: pointer;\n        font-family: 'Roboto', sans-serif;\n        width: 90%;\n        padding: 4px 0;\n        background-color: #B6B6B6;\n        border: 1px solid #BDBDBD;\n        transition: all 0.2s; }\n        .me-container .bars-list .bar button:hover {\n          background-color: #EBEBEB; }\n\n.search-container {\n  max-width: 500px;\n  margin-right: auto;\n  margin-left: auto;\n  margin-bottom: 30px; }\n  .search-container form {\n    width: 95%;\n    margin-right: auto;\n    margin-left: auto; }\n    .search-container form input {\n      font-family: 'Roboto', sans-serif;\n      width: 95%;\n      font-size: 1.3em;\n      border: none;\n      border-bottom: 1px solid #B6B6B6;\n      padding: 4px;\n      margin-bottom: 3px; }\n    .search-container form button {\n      height: 38px;\n      width: 87px;\n      font-size: 1.3em;\n      border: none; }\n\n.going {\n  background-color: #B2DFDB; }\n\n@media (max-width: 550px) {\n  .app-container nav {\n    line-height: 53px; }\n    .app-container nav ul {\n      clear: both; }\n      .app-container nav ul li {\n        font-size: 1em;\n        color: #212121;\n        width: none;\n        display: inline-block;\n        text-align: center;\n        height: 40px; }\n        .app-container nav ul li a {\n          text-decoration: none; }\n        .app-container nav ul li a.active {\n          color: #FFC107;\n          text-decoration: none; }\n        .app-container nav ul li #username {\n          display: inline-block; } }\n", ""]);
 
 	// exports
 

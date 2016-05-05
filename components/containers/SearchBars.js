@@ -27,7 +27,7 @@ class SearchBars extends React.Component {
         //console.log('barslist in SEARch', barsList.term);
         
         return (
-            <div>
+            <div className='search-container'>
                 <form onSubmit={this.handleSubmit.bind(this)}>
                     <input 
                         value={this.state.text}

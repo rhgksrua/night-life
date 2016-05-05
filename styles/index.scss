@@ -7,12 +7,15 @@ $a-color: #FFC107;
 $text-color: #FFFFFF;
 $s-text-color: #727272;
 $p-text-color: #212121;
+$divider-color: #B6B6B6;
 
 body {
     font-family: 'Roboto', sans-serif;
 }
 
 .app-container {
+    margin-right: auto;
+    margin-left: auto;
     nav {
         height: 100px;
         width: 100%;
@@ -20,6 +23,7 @@ body {
         white-space: nowrap;
         background-color: $dp-color;
         color: $text-color;
+        margin-bottom: 30px;
         h1 {
             padding-left: 10px;
             font-size: 2em;
@@ -52,14 +56,23 @@ body {
 }
 
 .home-container {
+    text-align: center;
+    max-width: 500px;
+    margin-right: auto;
+    margin-left: auto;
     .bars-list {
-        width: 500px;
         margin-right: auto;
         margin-left: auto;
         .bar {
-            width: 100%;
-            border: 1px solid $lp-color;
+            cursor: pointer;
+            box-sizing: border-box;
+            border: 1px solid $divider-color;
             padding: 5px;
+            margin: 6px;
+            box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.14);
+            h3 {
+                font-size: 1.1em;
+            }
             .bar-image {
                 float: left;
                 width: 50px;
@@ -73,7 +86,106 @@ body {
     }
 }
 
+.me-container {
+    text-align: center;
+    max-width: 500px;
+    margin-right: auto;
+    margin-left: auto;
+    .bars-list {
+        margin-right: auto;
+        margin-left: auto;
+        .bar {
+            box-sizing: border-box;
+            border: 1px solid $divider-color;
+            padding: 5px;
+            margin: 6px;
+            box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.14);
+            h3 {
+                font-size: 1.1em;
+            }
+            .bar-image {
+                float: left;
+                width: 50px;
+            }
+            .bar-info {
+                padding: 5px 5px 5px 55px;
+                overflow: auto;
+                height: auto;
+            }
+            button {
+                cursor: pointer;
+                font-family: 'Roboto', sans-serif;
+                width: 90%;
+                padding: 4px 0;
+                background-color: $divider-color;
+                border: 1px solid #BDBDBD;
+                transition: all 0.2s;
+                &:hover {
+                    background-color: #EBEBEB;
+                }
+            }
+        }
+    }
+}
+
+.search-container {
+    max-width: 500px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 30px;
+    form {
+        width: 95%;
+        margin-right: auto;
+        margin-left: auto;
+        input {
+            font-family: 'Roboto', sans-serif;
+            width: 95%;
+            font-size: 1.3em;
+            border: none;
+            border-bottom: 1px solid $divider-color;
+            padding: 4px;
+            margin-bottom: 3px;
+        }
+        button {
+            height: 38px;
+            width: 87px;
+            font-size: 1.3em;
+            border: none;
+        }
+        
+    }
+}
+
 
 .going {
     background-color: $lp-color;
+}
+
+@media (max-width: 550px) {
+    .app-container {
+        nav {
+            line-height: 53px;
+            ul {
+                clear: both;
+                li {
+                    font-size: 1em;
+                    color: #212121;
+                    width: none;
+                    display: inline-block;
+                    text-align: center;
+                    height: 40px;
+                    a {
+                        text-decoration: none;
+                    }
+                    a.active {
+                        color: $a-color;
+                        text-decoration: none;
+                    }
+                    #username {
+                        display: inline-block;
+                    }
+                }
+            }
+        }
+    }
 }
