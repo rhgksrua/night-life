@@ -6,6 +6,9 @@ class BarsList extends React.Component {
     }
     handleAddBarToMe(bar) {
         // bar exists in myList, removes bar instead.
+        if (!this.props.userInfo.username) {
+            return;
+        }
         if (this.props.myList.some(myBar => {
             return bar.id === myBar.id;
         })) {
@@ -20,12 +23,19 @@ class BarsList extends React.Component {
             bars = barsList.bars.map((bar, i) => {
                 //console.log(bar);
                 let goingNumber = (bar.goingNumber && bar.goingNumber > 0) ? bar.goingNumber : undefined;
+                console.log('--bar going', bar.userGoing);
                 return (
-                    <li key={bar.id} onClick={this.handleAddBarToMe.bind(this, bar)}>
-                        <p>{bar.name}</p>
-                        {goingNumber &&
-                        <p>{goingNumber}</p>
-                        }
+                    <li className={bar.userGoing === true ? 'bar going' : 'bar'} key={bar.id} onClick={this.handleAddBarToMe.bind(this, bar)}>
+                        <p className='bar-image'><img src={bar.image_url}/></p>
+                        <div className='bar-info'>
+                            <p><a href={bar.url}>{bar.name}</a></p>
+                            {goingNumber &&
+                            <p>Attending: {goingNumber}</p>
+                            }
+                            <p>{bar.snippet_text}</p>
+                            <p>Review Count: {bar.review_count}</p>
+                            <img src={bar.rating_img_url} />
+                        </div>
                     </li>
                 );
             });
@@ -39,7 +49,7 @@ class BarsList extends React.Component {
                 {barsList.term &&
                     <h1>{barsList.term}</h1>
                 }
-                <ul>
+                <ul className='bars-list'>
                     {bars}
                 </ul>
             </div>

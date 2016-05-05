@@ -27,8 +27,10 @@ function barsList(state = {isFetching: false}, action) {
         case REMOVE_BAR:
             // Decrease goingNumber from bars if removed from user list.
             let filteredBars = state.bars.map(bar => {
+                //console.log('remove bar', bar.id, action.barId);
                 if (bar.id === action.barId && bar.goingNumber && bar.goingNumber > 0) {
                     bar.goingNumber--;
+                    bar.userGoing = false;
                 }
                 return bar;
             });
@@ -36,7 +38,6 @@ function barsList(state = {isFetching: false}, action) {
                 bars: filteredBars
             });
         case ADD_BAR:
-            console.log('---action bar', action.bar)
             let newBars = state.bars.map(bar => {
                 if (bar.id === action.bar.id) {
                     if (bar.goingNumber === undefined) {
@@ -44,6 +45,7 @@ function barsList(state = {isFetching: false}, action) {
                     } else {
                         bar.goingNumber++;
                     }
+                    bar.userGoing = true;
                 }
                 return bar;
             });

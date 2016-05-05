@@ -22,19 +22,20 @@ class App extends React.Component {
         return (
             <div className='app-container'>
                 <nav>
+                    <h1>Night Life</h1>
                     <ul>
-                        <li><Link to='/' activeClassName='active' onlyActiveOnIndex={true}>HOME</Link></li>
-                        <li><Link to='/me' activeClassName='active'>ME</Link></li>
+                        <li className='tab home'><Link to='/' activeClassName='active' onlyActiveOnIndex={true}>HOME</Link></li>
+                        <li className='tab me'><Link to='/me' activeClassName='active'>ME</Link></li>
+                        {this.props.userInfo.username &&
+                            <li><p id='username'>{this.props.userInfo.username}</p></li>
+                        }
+                        {this.props.userInfo.username === undefined &&
+                            <li><a href={`/auth/github/${query}`}>Sign In</a></li>
+                        }
+                        {this.props.userInfo.username &&
+                            <li><a href='#' onClick={this.props.logOut}>Log Out</a></li>
+                        }
                     </ul>
-                    {this.props.userInfo.username === undefined &&
-                        <a href={`/auth/github/${query}`}>Sign In</a>
-                    }
-                    {this.props.userInfo.username &&
-                        <a href='#' onClick={this.props.logOut}>Log Out</a>
-                    }
-                    {this.props.userInfo.username &&
-                        <p>{this.props.userInfo.username}</p>
-                    }
                 </nav>
                 {this.props.children}
             </div>

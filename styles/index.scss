@@ -1,12 +1,79 @@
+@import 'reset';
+
+$dp-color: #00796B;
+$p-color: #00796B;
+$lp-color: #B2DFDB;
+$a-color: #FFC107;
+$text-color: #FFFFFF;
+$s-text-color: #727272;
+$p-text-color: #212121;
 
 body {
-    background-color: #EBEBEB;
-    color: #971D1D;
+    font-family: 'Roboto', sans-serif;
 }
 
-#app {
-    color: red;
-    .app-container {
-        color: blue;
+.app-container {
+    nav {
+        height: 100px;
+        width: 100%;
+        line-height: 100px;
+        white-space: nowrap;
+        background-color: $dp-color;
+        color: $text-color;
+        h1 {
+            padding-left: 10px;
+            font-size: 2em;
+            float: left;
+        }
+        ul {
+            float: right;
+            li {
+                display: inline-block;
+                width: 80px;
+                text-align: center;
+                a {
+                    color: $text-color;
+                    text-decoration: none;
+                }
+                a.active {
+                    color: $a-color;
+                    text-decoration: none;
+                }
+                #username {
+                    display: inline-block;
+                    color: $text-color;
+                }
+            }
+            li.tab {
+                font-size: 1.3em;
+            }
+        }
     }
+}
+
+.home-container {
+    .bars-list {
+        width: 500px;
+        margin-right: auto;
+        margin-left: auto;
+        .bar {
+            width: 100%;
+            border: 1px solid $lp-color;
+            padding: 5px;
+            .bar-image {
+                float: left;
+                width: 50px;
+            }
+            .bar-info {
+                padding: 5px 5px 5px 55px;
+                overflow: auto;
+                height: auto;
+            }
+        }
+    }
+}
+
+
+.going {
+    background-color: $lp-color;
 }

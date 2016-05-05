@@ -27229,8 +27229,10 @@
 	        case _actions.REMOVE_BAR:
 	            // Decrease goingNumber from bars if removed from user list.
 	            var filteredBars = state.bars.map(function (bar) {
+	                //console.log('remove bar', bar.id, action.barId);
 	                if (bar.id === action.barId && bar.goingNumber && bar.goingNumber > 0) {
 	                    bar.goingNumber--;
+	                    bar.userGoing = false;
 	                }
 	                return bar;
 	            });
@@ -27238,7 +27240,6 @@
 	                bars: filteredBars
 	            });
 	        case _actions.ADD_BAR:
-	            console.log('---action bar', action.bar);
 	            var newBars = state.bars.map(function (bar) {
 	                if (bar.id === action.bar.id) {
 	                    if (bar.goingNumber === undefined) {
@@ -27246,6 +27247,7 @@
 	                    } else {
 	                        bar.goingNumber++;
 	                    }
+	                    bar.userGoing = true;
 	                }
 	                return bar;
 	            });
@@ -27362,12 +27364,13 @@
 	            headers: {
 	                'Content-Type': 'application/json'
 	            },
+	            credentials: 'same-origin',
 	            method: 'post',
 	            body: JSON.stringify({ loc: loc })
 	        }).then(function (data) {
 	            return data.json();
 	        }).then(function (data) {
-	            console.log('check error', data);
+	            //console.log('check error', data);
 	            if (data.error) {
 	                dispatch(addBars([]));
 	                throw new Error(data.error);
@@ -28238,11 +28241,16 @@
 	                    'nav',
 	                    null,
 	                    _react2.default.createElement(
+	                        'h1',
+	                        null,
+	                        'Night Life'
+	                    ),
+	                    _react2.default.createElement(
 	                        'ul',
 	                        null,
 	                        _react2.default.createElement(
 	                            'li',
-	                            null,
+	                            { className: 'tab home' },
 	                            _react2.default.createElement(
 	                                _reactRouter.Link,
 	                                { to: '/', activeClassName: 'active', onlyActiveOnIndex: true },
@@ -28251,28 +28259,40 @@
 	                        ),
 	                        _react2.default.createElement(
 	                            'li',
-	                            null,
+	                            { className: 'tab me' },
 	                            _react2.default.createElement(
 	                                _reactRouter.Link,
 	                                { to: '/me', activeClassName: 'active' },
 	                                'ME'
 	                            )
+	                        ),
+	                        this.props.userInfo.username && _react2.default.createElement(
+	                            'li',
+	                            null,
+	                            _react2.default.createElement(
+	                                'p',
+	                                { id: 'username' },
+	                                this.props.userInfo.username
+	                            )
+	                        ),
+	                        this.props.userInfo.username === undefined && _react2.default.createElement(
+	                            'li',
+	                            null,
+	                            _react2.default.createElement(
+	                                'a',
+	                                { href: '/auth/github/' + query },
+	                                'Sign In'
+	                            )
+	                        ),
+	                        this.props.userInfo.username && _react2.default.createElement(
+	                            'li',
+	                            null,
+	                            _react2.default.createElement(
+	                                'a',
+	                                { href: '#', onClick: this.props.logOut },
+	                                'Log Out'
+	                            )
 	                        )
-	                    ),
-	                    this.props.userInfo.username === undefined && _react2.default.createElement(
-	                        'a',
-	                        { href: '/auth/github/' + query },
-	                        'Sign In'
-	                    ),
-	                    this.props.userInfo.username && _react2.default.createElement(
-	                        'a',
-	                        { href: '#', onClick: this.props.logOut },
-	                        'Log Out'
-	                    ),
-	                    this.props.userInfo.username && _react2.default.createElement(
-	                        'p',
-	                        null,
-	                        this.props.userInfo.username
 	                    )
 	                ),
 	                this.props.children
@@ -28416,11 +28436,11 @@
 	function mapDispatchToProps(dispatch, ownProps) {
 	    return {
 	        addBarToMe: function addBarToMe(bar) {
-	            console.log('addBarToMe', bar);
+	            //console.log('addBarToMe', bar);
 	            dispatch((0, _actions.addBarAJAX)(bar));
 	        },
 	        removeBarFromMe: function removeBarFromMe(barId, myList) {
-	            console.log('removing bar from me', barId);
+	            //console.log('removing bar from me', barId);
 	            dispatch((0, _actions.removeBarAJAX)(barId));
 	        }
 
@@ -28466,6 +28486,9 @@
 	        key: 'handleAddBarToMe',
 	        value: function handleAddBarToMe(bar) {
 	            // bar exists in myList, removes bar instead.
+	            if (!this.props.userInfo.username) {
+	                return;
+	            }
 	            if (this.props.myList.some(function (myBar) {
 	                return bar.id === myBar.id;
 	            })) {
@@ -28488,18 +28511,45 @@
 	                bars = barsList.bars.map(function (bar, i) {
 	                    //console.log(bar);
 	                    var goingNumber = bar.goingNumber && bar.goingNumber > 0 ? bar.goingNumber : undefined;
+	                    console.log('--bar going', bar.userGoing);
 	                    return _react2.default.createElement(
 	                        'li',
-	                        { key: bar.id, onClick: _this2.handleAddBarToMe.bind(_this2, bar) },
+	                        { className: bar.userGoing === true ? 'bar going' : 'bar', key: bar.id, onClick: _this2.handleAddBarToMe.bind(_this2, bar) },
 	                        _react2.default.createElement(
 	                            'p',
-	                            null,
-	                            bar.name
+	                            { className: 'bar-image' },
+	                            _react2.default.createElement('img', { src: bar.image_url })
 	                        ),
-	                        goingNumber && _react2.default.createElement(
-	                            'p',
-	                            null,
-	                            goingNumber
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'bar-info' },
+	                            _react2.default.createElement(
+	                                'p',
+	                                null,
+	                                _react2.default.createElement(
+	                                    'a',
+	                                    { href: bar.url },
+	                                    bar.name
+	                                )
+	                            ),
+	                            goingNumber && _react2.default.createElement(
+	                                'p',
+	                                null,
+	                                'Attending: ',
+	                                goingNumber
+	                            ),
+	                            _react2.default.createElement(
+	                                'p',
+	                                null,
+	                                bar.snippet_text
+	                            ),
+	                            _react2.default.createElement(
+	                                'p',
+	                                null,
+	                                'Review Count: ',
+	                                bar.review_count
+	                            ),
+	                            _react2.default.createElement('img', { src: bar.rating_img_url })
 	                        )
 	                    );
 	                });
@@ -28522,7 +28572,7 @@
 	                ),
 	                _react2.default.createElement(
 	                    'ul',
-	                    null,
+	                    { className: 'bars-list' },
 	                    bars
 	                )
 	            );
@@ -28844,7 +28894,7 @@
 
 
 	// module
-	exports.push([module.id, "body {\n  background-color: #EBEBEB;\n  color: #971D1D; }\n\n#app {\n  color: red; }\n  #app .app-container {\n    color: blue; }\n", ""]);
+	exports.push([module.id, "/* http://meyerweb.com/eric/tools/css/reset/ \n   v2.0 | 20110126\n   License: none (public domain)\n*/\nhtml, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\nbody {\n  font-family: 'Roboto', sans-serif; }\n\n.app-container nav {\n  height: 100px;\n  width: 100%;\n  line-height: 100px;\n  white-space: nowrap;\n  background-color: #00796B;\n  color: #FFFFFF; }\n  .app-container nav h1 {\n    padding-left: 10px;\n    font-size: 2em;\n    float: left; }\n  .app-container nav ul {\n    float: right; }\n    .app-container nav ul li {\n      display: inline-block;\n      width: 80px;\n      text-align: center; }\n      .app-container nav ul li a {\n        color: #FFFFFF;\n        text-decoration: none; }\n      .app-container nav ul li a.active {\n        color: #FFC107;\n        text-decoration: none; }\n      .app-container nav ul li #username {\n        display: inline-block;\n        color: #FFFFFF; }\n    .app-container nav ul li.tab {\n      font-size: 1.3em; }\n\n.home-container .bars-list {\n  width: 500px;\n  margin-right: auto;\n  margin-left: auto; }\n  .home-container .bars-list .bar {\n    width: 100%;\n    border: 1px solid #B2DFDB;\n    padding: 5px; }\n    .home-container .bars-list .bar .bar-image {\n      float: left;\n      width: 50px; }\n    .home-container .bars-list .bar .bar-info {\n      padding: 5px 5px 5px 55px;\n      overflow: auto;\n      height: auto; }\n\n.going {\n  background-color: #B2DFDB; }\n", ""]);
 
 	// exports
 

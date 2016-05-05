@@ -16,11 +16,11 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch, ownProps) {
     return {
         addBarToMe: bar => {
-            console.log('addBarToMe', bar);
+            //console.log('addBarToMe', bar);
             dispatch(addBarAJAX(bar));
         },
         removeBarFromMe: (barId, myList) => {
-            console.log('removing bar from me', barId);
+            //console.log('removing bar from me', barId);
             dispatch(removeBarAJAX(barId));
         }
         

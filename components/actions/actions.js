@@ -46,6 +46,7 @@ export const getSearchResult = (loc) => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
+                    credentials: 'same-origin',
                     method: 'post',
                     body: JSON.stringify({loc: loc})
                 }
@@ -54,7 +55,7 @@ export const getSearchResult = (loc) => {
                 return data.json();
             })
             .then((data) => {
-                console.log('check error', data);
+                //console.log('check error', data);
                 if (data.error) {
                     dispatch(addBars([]));
                     throw new Error(data.error);

@@ -66,6 +66,11 @@ function isLoggedInAJAX(req, res, next) {
     }
 }
 
+function getUserInfoMiddleware(req, res, next) {
+    req.isAuthenticated();
+    next();
+}
+
 function saveTermMiddleware(req, res, next) {
     if (req.query.term) {
         req.session.term = req.query.term;
@@ -115,8 +120,6 @@ app.post('/addbar', isLoggedInAJAX, function(req, res) {
 app.post('/removebar', isLoggedInAJAX, function(req, res) {
     var userId = req.user._id;
     var barId = req.body.barId;
-    console.log('---user id', req.user._id);
-    console.log('---bar id', req.body.barId);
     
     var query = {
         id: barId
@@ -144,9 +147,11 @@ app.post('/userinfo', isLoggedInAJAX, function(req, res) {
                 // bar is not a plain js object. Need to convert it using toObject
                 bar = bar.toObject();
                 bar.goingNumber = bar.going.length;
+                // convert 'going' from list of people going to if the user is going or not
                 if (bar.going) {
                     delete bar.going;
                 }
+                bar.going = true;
                 return bar;
             });
             return res.json(
@@ -162,6 +167,7 @@ app.post('/userinfo', isLoggedInAJAX, function(req, res) {
 });
 
 app.post('/test/test', function(req, res) {
+    console.log('--- req user id', req.user);
     
     var loc = req.body.loc;
     if (!loc) {
@@ -187,15 +193,38 @@ app.post('/test/test', function(req, res) {
                 injectedBars = data.businesses.map(function(bar) {
                     // bars with at least one person attending.
                     
+                    bar.userGoing = false;
+                    
                     // bar is from yelp
                     // bars is from mongo
-                    
                     for (var i = 0, len = bars.length; i < len; i++) {
+                        
+                        
+                        // get number of attendees
                         if (bars[i]['id'] === bar.id) {
                             bar.goingNumber = bars[i].going.length;
                             break;
                         }
                     }
+                    
+                    // check if user is going
+                    if (req.user && req.user._id) {
+                        var goingStatus = bars.some(function(el) {
+                            //console.log('--- ids', bar.id, el.id);
+                            //console.log('--- going', el.going);
+                            var userExists = el.going.some(function(user) {
+                                //console.log('---ids', user.userId, req.user._id);
+                                return user.userId == req.user._id;
+                            })
+                            //console.log('---user exits', userExists);
+                            return bar.id == el.id && userExists;
+                        });
+                        //console.log('--- going status', goingStatus);
+                        if (goingStatus) {
+                            bar.userGoing = true;
+                        }
+                    }
+                    
                     return bar;
                 });
                 return res.json({businesses: injectedBars});
@@ -221,7 +250,7 @@ app.get('/auth/github/callback',
         if (req.session.redirect) {
             path = path + req.session.redirect + '/';
         }
-        
+       
         console.log('---- term', req.session.term)
         if (req.session.term) {
             //return res.redirect('/?term=' + req.session.term);
