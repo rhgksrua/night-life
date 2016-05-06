@@ -25,14 +25,14 @@ class BarsList extends React.Component {
                 let goingNumber = (bar.goingNumber && bar.goingNumber > 0) ? bar.goingNumber : undefined;
                 console.log('--bar going', bar.userGoing);
                 return (
-                    <li className={bar.userGoing === true ? 'bar going' : 'bar'} key={bar.id} onClick={this.handleAddBarToMe.bind(this, bar)}>
+                    <li className={bar.userGoing === true ? 'bar going' : 'bar'} key={bar.id}>
                         <p className='bar-image'><img src={bar.image_url}/></p>
                         <div className='bar-info'>
-                            <h3><a href={bar.url}>{bar.name}</a></h3>
+                            <h3><a href={bar.url}>{bar.name}</a><span className='going-status' onClick={this.handleAddBarToMe.bind(this, bar)}>{bar.userGoing === true ? 'Going' : 'GO!'}</span></h3>
                             {goingNumber &&
                             <p>Attending: {goingNumber}</p>
                             }
-                            <p>{bar.snippet_text}</p>
+                            <p className='snippet'>{bar.snippet_text}</p>
                             <p>Review Count: {bar.review_count}</p>
                             <img src={bar.rating_img_url} />
                         </div>
