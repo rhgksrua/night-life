@@ -30,6 +30,7 @@ class SearchBars extends React.Component {
             <div className='search-container'>
                 <form onSubmit={this.handleSubmit.bind(this)}>
                     <input 
+                        placeholder='Search'
                         value={this.state.text}
                         onChange={this.handleChange.bind(this)}
                     />

@@ -33,7 +33,7 @@ body {
             float: right;
             li {
                 display: inline-block;
-                width: 80px;
+                width: 90px;
                 text-align: center;
                 a {
                     color: $text-color;
@@ -62,6 +62,7 @@ body {
     .bars-list {
         margin-right: auto;
         margin-left: auto;
+        /*
         .bar {
             box-sizing: border-box;
             border-bottom: 1px solid $divider-color;
@@ -110,6 +111,56 @@ body {
                 }
             }
         }
+        */
+    }
+}
+
+.bar {
+    box-sizing: border-box;
+    border-bottom: 1px solid $divider-color;
+    padding: 5px;
+    margin: 6px;
+    height: 121px;
+    line-height: 20px;
+    h3 {
+        font-size: 1.1em;
+    }
+    a {
+        color: $s-text-color;
+        text-decoration: none;
+    }
+    .bar-image {
+        float: left;
+        margin-left: 5px;
+        img {
+            margin-top: 10px;
+            width: 80px;
+            border-radius: 50%;
+        }
+    }
+    .bar-info {
+        padding: 5px 5px 5px 15px;
+        overflow: auto;
+        height: auto;
+    }
+    .snippet {
+        color: $s-text-color;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    &:hover {
+        box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.14);
+    }
+    .going-status {
+        cursor: pointer;
+        background-color: $a-color;
+        font-size: 0.8em;
+        margin-left: 10px;
+        padding: 2px 4px;
+        &:hover {
+            border: 1px solid $s-text-color;
+        }
     }
 }
 
@@ -122,6 +173,7 @@ body {
         margin-right: auto;
         margin-left: auto;
         .bar {
+            /*
             box-sizing: border-box;
             border-bottom: 1px solid $divider-color;
             padding: 5px;
@@ -142,6 +194,7 @@ body {
                 overflow: auto;
                 height: auto;
             }
+            */
             button {
                 cursor: pointer;
                 font-family: 'Roboto', sans-serif;
@@ -186,9 +239,12 @@ body {
     }
 }
 
-
 .going {
     background-color: $lp-color;
+}
+
+.hide {
+    display: none;
 }
 
 @media (max-width: 550px) {
