@@ -1,6 +1,6 @@
 # FCC Nightlife SPA
 
-FCC Nightlife app using nodeJS and reactJS
+FCC Nightlife app using nodeJS and reactJS with Yelp api
 
 ## Getting started
 
@@ -21,10 +21,15 @@ For yelp api.
 * `YELP_TOKEN_SECRET`
 
 Uses mongoDB. Start mongoDB.
+* run `./mongod` if running on `c9.io`
 
 Start server with:
 * `node server.js`
 
 Build components with:
 * `webpack`
-* 
+
+
+## Features
+
+Currently, only 5 results are returned.

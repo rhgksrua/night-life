@@ -11,11 +11,11 @@ class Me extends React.Component {
                         <p className='bar-image'><img src={bar.image_url}/></p>
                         <div className='bar-info'>
                             <h3><a href={bar.url}>{bar.name}</a></h3>
-                            <p>{bar.snippet_text}</p>
+                            <p className='snippet'>{bar.snippet_text}</p>
                             <p>Review Count: {bar.review_count}</p>
                             <img src={bar.rating_img_url} />
+                            <button onClick={this.props.removeBarFromMe.bind(this, bar.id)}>Not Going</button>
                         </div>
-                        <button onClick={this.props.removeBarFromMe.bind(this, bar.id)}>Not Going</button>
                     </li>
                 );
             });

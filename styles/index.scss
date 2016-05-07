@@ -9,13 +9,21 @@ $s-text-color: #727272;
 $p-text-color: #212121;
 $divider-color: #B6B6B6;
 
+html {
+    height: 100%;
+    box-sizing: border-box;
+}
+
 body {
     font-family: 'Roboto', sans-serif;
+    min-height: 100%;
+    position: relative;
 }
 
 .app-container {
     margin-right: auto;
     margin-left: auto;
+    padding-bottom: 60px;
     nav {
         height: 100px;
         width: 100%;
@@ -120,7 +128,6 @@ body {
     border-bottom: 1px solid $divider-color;
     padding: 5px;
     margin: 6px;
-    height: 121px;
     line-height: 20px;
     h3 {
         font-size: 1.1em;
@@ -145,8 +152,8 @@ body {
     }
     .snippet {
         color: $s-text-color;
-        white-space: nowrap;
-        overflow: hidden;
+        //white-space: nowrap;
+        //overflow: hidden;
         text-overflow: ellipsis;
     }
     &:hover {
@@ -239,6 +246,15 @@ body {
     }
 }
 
+.login {
+    position: relative;
+    .login-img {
+        width: 29px;
+        position: absolute;
+        top: -22px;
+    }
+}
+
 .going {
     background-color: $lp-color;
 }
@@ -247,7 +263,35 @@ body {
     display: none;
 }
 
+.blank {
+    padding-left: 20px;
+}
+
+.yelp {
+    text-align: center;
+    padding: 20px 0;
+}
+
+footer {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+    height: 25px;
+    padding-top: 9px;
+    background-color: $lp-color;
+}
+
 @media (max-width: 550px) {
+    .login {
+        position: relative;
+        .login-img {
+            width: 29px;
+            position: absolute;
+            top: 12px;
+        }
+    }
     .app-container {
         nav {
             line-height: 53px;

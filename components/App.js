@@ -33,7 +33,11 @@ class App extends React.Component {
                         <li className='tab home'><Link to='/' activeClassName='active' onlyActiveOnIndex={true}>HOME</Link></li>
                         <li className='tab me'><Link to='/me' activeClassName='active'>{this.props.userInfo.username ? this.props.userInfo.username : ''}</Link></li>
                         {this.props.userInfo.username === undefined &&
-                            <li><a href={`/auth/github/${query}`}>Sign In</a></li>
+                            <li className='login'>
+                                <a href={`/auth/github/${query}`}>
+                                    <img className='login-img' src='/GitHub-Mark-32px.png' />
+                                </a>
+                            </li>
                         }
                         {this.props.userInfo.username &&
                             <li><a href='#' onClick={this.logOut}>Log Out</a></li>
@@ -41,6 +45,9 @@ class App extends React.Component {
                     </ul>
                 </nav>
                 {this.props.children}
+                <footer>
+                    <p>By rhgksrua</p>
+                </footer>
             </div>
         
         );

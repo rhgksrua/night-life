@@ -17,7 +17,7 @@ class BarsList extends React.Component {
         return this.props.addBarToMe(bar);
     }
     render() {
-        let bars = <li>No Results</li>;
+        let bars = <li className='blank'>No Results</li>;
         let barsList = this.props.barsList;
         if (barsList.bars && barsList.bars.length > 0) {
             bars = barsList.bars.map((bar, i) => {
@@ -43,13 +43,16 @@ class BarsList extends React.Component {
             //console.log('total bars', bars);
         } 
         if (this.props.barsList.isFetching) {
-            bars = <li>Fetching...</li>
+            bars = <li className='blank'>Fetching...</li>
         }
         return (
             <div>
                 <ul className='bars-list'>
                     {bars}
                 </ul>
+                <div className='yelp'>
+                    <a href='http://yelp.com'><img src='/yelp_powered_btn_light.png'/></a>
+                </div>
             </div>
         );
     }
