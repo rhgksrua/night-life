@@ -33,3 +33,4 @@ Build components with:
 ## Features
 
 Currently, only 5 results are returned.
+Also, only sign in method is through Github.

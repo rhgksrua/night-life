@@ -27,7 +27,6 @@ function barsList(state = {bars: [], isFetching: false}, action) {
         case REMOVE_BAR:
             // Decrease goingNumber from bars if removed from user list.
             let filteredBars = state.bars.map(bar => {
-                //console.log('remove bar', bar.id, action.barId);
                 if (bar.id === action.barId && bar.goingNumber && bar.goingNumber > 0) {
                     bar.goingNumber--;
                     bar.userGoing = false;
@@ -57,8 +56,6 @@ function barsList(state = {bars: [], isFetching: false}, action) {
     }
 }
 
-//export default nightLifeApp;
-
 
 function myList(state = [], action) {
     switch(action.type) {
@@ -66,7 +63,6 @@ function myList(state = [], action) {
             return state.concat(action.bar);
         case REMOVE_BAR:
             return state.filter((bar) => {
-                //console.log('reducer bar', bar.barId, action.barId);
                 return bar.id !== action.barId;
             });
         case SET_USER_BAR_LIST:

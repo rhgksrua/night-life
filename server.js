@@ -34,7 +34,6 @@ require('./config/passport')(passport);
 var port = process.env.PORT || 3000;
 
 var MONGO_URI = process.env.MONGO_URI || process.env.IP + "/nightlife";
-//console.log('mongo uri:', MONGO_URI);
 mongoose.connect(process.env.MONGO_URI);
 
 app.use(morgan('combined'));
@@ -66,11 +65,6 @@ function isLoggedInAJAX(req, res, next) {
     }
 }
 
-function getUserInfoMiddleware(req, res, next) {
-    req.isAuthenticated();
-    next();
-}
-
 function saveTermMiddleware(req, res, next) {
     if (req.query.term) {
         req.session.term = req.query.term;
@@ -82,7 +76,6 @@ function redirectMiddleware(req, res, next) {
     if (req.query.redirect) {
         req.session.redirect = req.query.redirect;
     }
-    console.log('---- redirect', req.session.redirect);
     next();
 }
 
@@ -166,14 +159,13 @@ app.post('/userinfo', isLoggedInAJAX, function(req, res) {
     }
 });
 
-app.post('/test/test', function(req, res) {
-    console.log('--- req user id', req.user);
+app.post('/results', function(req, res) {
     
     var loc = req.body.loc;
     if (!loc) {
         return res.json({error: 'no location'});
     }
-    yelp.search({ term: 'bar', location: loc, limit: 5})
+    yelp.search({ term: 'bar', location: loc, limit: 7})
         .then(function(data) {
             // find number of people going to each bar
             
@@ -210,16 +202,11 @@ app.post('/test/test', function(req, res) {
                     // check if user is going
                     if (req.user && req.user._id) {
                         var goingStatus = bars.some(function(el) {
-                            //console.log('--- ids', bar.id, el.id);
-                            //console.log('--- going', el.going);
                             var userExists = el.going.some(function(user) {
-                                //console.log('---ids', user.userId, req.user._id);
                                 return user.userId == req.user._id;
                             })
-                            //console.log('---user exits', userExists);
                             return bar.id == el.id && userExists;
                         });
-                        //console.log('--- going status', goingStatus);
                         if (goingStatus) {
                             bar.userGoing = true;
                         }
@@ -231,9 +218,8 @@ app.post('/test/test', function(req, res) {
             });
         })
         .catch(function(err) {
-            console.log('error', err);
             return res.json({error: 'yelp api error'});
-        })
+        });
 });
 
 app.get('/auth/github',
@@ -251,9 +237,7 @@ app.get('/auth/github/callback',
             path = path + req.session.redirect + '/';
         }
        
-        console.log('---- term', req.session.term)
         if (req.session.term) {
-            //return res.redirect('/?term=' + req.session.term);
             path = path + '?term=' + encodeURIComponent(req.session.term);
         }
         // Reset redirect from session

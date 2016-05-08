@@ -22,10 +22,6 @@ class SearchBars extends React.Component {
         }
     }
     render() {
-        //let input;
-        //const { barsList, dispatch } = this.props.barsList;
-        //console.log('barslist in SEARch', barsList.term);
-        
         return (
             <div className='search-container'>
                 <form onSubmit={this.handleSubmit.bind(this)}>

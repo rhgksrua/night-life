@@ -9,8 +9,6 @@ class App extends React.Component {
         this.logOut = this.logOut.bind(this);
     }
     componentWillMount() {
-        //const { dispatch } = this.props;
-        console.log(this.context);
         this.props.initialize(this.props.location.query.term);
     }
     getRedirectPath() {
@@ -21,7 +19,6 @@ class App extends React.Component {
         this.props.logOut(this.context.router.push);
     }
     render() {
-        console.log('context', this.context.router);
         let redirect = `?redirect=${encodeURIComponent(this.getRedirectPath())}`;
         let term = this.props.barsList.term ? `&term=${encodeURIComponent(this.props.barsList.term)}` : '';
         let query = redirect + term;

@@ -41,7 +41,7 @@ export const getSearchResult = (loc) => {
     return dispatch => {
         dispatch(searchTerm(loc));
         return fetch(
-                `${window.location.protocol}//${window.location.host}/test/test`,
+                `${window.location.protocol}//${window.location.host}/results`,
                 {
                     headers: {
                         'Content-Type': 'application/json'
@@ -62,7 +62,6 @@ export const getSearchResult = (loc) => {
                 }
                 // data.businesses is an array.
                 dispatch(addBars(data.businesses));
-                //console.log('fetch data', data);
                 return data;
             }).catch((err) => {
                 console.warn(err);

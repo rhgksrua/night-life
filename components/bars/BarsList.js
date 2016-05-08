@@ -21,9 +21,7 @@ class BarsList extends React.Component {
         let barsList = this.props.barsList;
         if (barsList.bars && barsList.bars.length > 0) {
             bars = barsList.bars.map((bar, i) => {
-                //console.log(bar);
                 let goingNumber = (bar.goingNumber && bar.goingNumber > 0) ? bar.goingNumber : undefined;
-                //console.log('--bar going', bar.userGoing);
                 return (
                     <li className={bar.userGoing === true ? 'bar going' : 'bar'} key={bar.id}>
                         <p className='bar-image'><img src={bar.image_url}/></p>
@@ -40,7 +38,6 @@ class BarsList extends React.Component {
                     </li>
                 );
             });
-            //console.log('total bars', bars);
         } 
         if (this.props.barsList.isFetching) {
             bars = <li className='blank'>Fetching...</li>
