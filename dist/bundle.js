@@ -27229,7 +27229,6 @@
 	        case _actions.REMOVE_BAR:
 	            // Decrease goingNumber from bars if removed from user list.
 	            var filteredBars = state.bars.map(function (bar) {
-	                //console.log('remove bar', bar.id, action.barId);
 	                if (bar.id === action.barId && bar.goingNumber && bar.goingNumber > 0) {
 	                    bar.goingNumber--;
 	                    bar.userGoing = false;
@@ -27259,8 +27258,6 @@
 	    }
 	}
 
-	//export default nightLifeApp;
-
 	function myList() {
 	    var state = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
 	    var action = arguments[1];
@@ -27270,7 +27267,6 @@
 	            return state.concat(action.bar);
 	        case _actions.REMOVE_BAR:
 	            return state.filter(function (bar) {
-	                //console.log('reducer bar', bar.barId, action.barId);
 	                return bar.id !== action.barId;
 	            });
 	        case _actions.SET_USER_BAR_LIST:
@@ -27360,7 +27356,7 @@
 	var getSearchResult = exports.getSearchResult = function getSearchResult(loc) {
 	    return function (dispatch) {
 	        dispatch(searchTerm(loc));
-	        return (0, _isomorphicFetch2.default)(window.location.protocol + '//' + window.location.host + '/test/test', {
+	        return (0, _isomorphicFetch2.default)(window.location.protocol + '//' + window.location.host + '/results', {
 	            headers: {
 	                'Content-Type': 'application/json'
 	            },
@@ -27377,7 +27373,6 @@
 	            }
 	            // data.businesses is an array.
 	            dispatch(addBars(data.businesses));
-	            //console.log('fetch data', data);
 	            return data;
 	        }).catch(function (err) {
 	            console.warn(err);
@@ -28221,8 +28216,6 @@
 	    _createClass(App, [{
 	        key: 'componentWillMount',
 	        value: function componentWillMount() {
-	            //const { dispatch } = this.props;
-	            console.log(this.context);
 	            this.props.initialize(this.props.location.query.term);
 	        }
 	    }, {
@@ -28239,7 +28232,6 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            console.log('context', this.context.router);
 	            var redirect = '?redirect=' + encodeURIComponent(this.getRedirectPath());
 	            var term = this.props.barsList.term ? '&term=' + encodeURIComponent(this.props.barsList.term) : '';
 	            var query = redirect + term;
@@ -28431,7 +28423,6 @@
 	    var barsList = state.barsList;
 	    var myList = state.myList;
 	    var userInfo = state.userInfo;
-	    //console.log('mapstate state', state);
 
 	    return {
 	        barsList: barsList,
@@ -28443,11 +28434,9 @@
 	function mapDispatchToProps(dispatch, ownProps) {
 	    return {
 	        addBarToMe: function addBarToMe(bar) {
-	            //console.log('addBarToMe', bar);
 	            dispatch((0, _actions.addBarAJAX)(bar));
 	        },
 	        removeBarFromMe: function removeBarFromMe(barId, myList) {
-	            //console.log('removing bar from me', barId);
 	            dispatch((0, _actions.removeBarAJAX)(barId));
 	        }
 
@@ -28516,9 +28505,7 @@
 	            var barsList = this.props.barsList;
 	            if (barsList.bars && barsList.bars.length > 0) {
 	                bars = barsList.bars.map(function (bar, i) {
-	                    //console.log(bar);
 	                    var goingNumber = bar.goingNumber && bar.goingNumber > 0 ? bar.goingNumber : undefined;
-	                    //console.log('--bar going', bar.userGoing);
 	                    return _react2.default.createElement(
 	                        'li',
 	                        { className: bar.userGoing === true ? 'bar going' : 'bar', key: bar.id },
@@ -28565,7 +28552,6 @@
 	                        )
 	                    );
 	                });
-	                //console.log('total bars', bars);
 	            }
 	            if (this.props.barsList.isFetching) {
 	                bars = _react2.default.createElement(
@@ -28664,10 +28650,6 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            //let input;
-	            //const { barsList, dispatch } = this.props.barsList;
-	            //console.log('barslist in SEARch', barsList.term);
-
 	            return _react2.default.createElement(
 	                'div',
 	                { className: 'search-container' },
@@ -28939,7 +28921,7 @@
 
 
 	// module
-	exports.push([module.id, "/* http://meyerweb.com/eric/tools/css/reset/ \n   v2.0 | 20110126\n   License: none (public domain)\n*/\nhtml, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\nhtml {\n  height: 100%;\n  box-sizing: border-box; }\n\nbody {\n  font-family: 'Roboto', sans-serif;\n  min-height: 100%;\n  position: relative; }\n\n.app-container {\n  margin-right: auto;\n  margin-left: auto;\n  padding-bottom: 60px; }\n  .app-container nav {\n    height: 100px;\n    width: 100%;\n    line-height: 100px;\n    white-space: nowrap;\n    background-color: #00796B;\n    color: #FFFFFF;\n    margin-bottom: 30px; }\n    .app-container nav h1 {\n      padding-left: 10px;\n      font-size: 2em;\n      float: left; }\n    .app-container nav ul {\n      float: right; }\n      .app-container nav ul li {\n        display: inline-block;\n        width: 90px;\n        text-align: center; }\n        .app-container nav ul li a {\n          color: #FFFFFF;\n          text-decoration: none; }\n        .app-container nav ul li a.active {\n          color: #FFC107;\n          text-decoration: none; }\n        .app-container nav ul li #username {\n          display: inline-block;\n          color: #FFFFFF; }\n      .app-container nav ul li.tab {\n        font-size: 1.3em; }\n\n.home-container {\n  max-width: 500px;\n  margin-right: auto;\n  margin-left: auto; }\n  .home-container .bars-list {\n    margin-right: auto;\n    margin-left: auto;\n    /*\n        .bar {\n            box-sizing: border-box;\n            border-bottom: 1px solid $divider-color;\n            padding: 5px;\n            margin: 6px;\n            height: 121px;\n            line-height: 20px;\n            h3 {\n                font-size: 1.1em;\n            }\n            a {\n                color: $s-text-color;\n                text-decoration: none;\n            }\n            .bar-image {\n                float: left;\n                margin-left: 5px;\n                img {\n                    margin-top: 10px;\n                    width: 80px;\n                    border-radius: 50%;\n                }\n            }\n            .bar-info {\n                padding: 5px 5px 5px 15px;\n                overflow: auto;\n                height: auto;\n            }\n            .snippet {\n                color: $s-text-color;\n                white-space: nowrap;\n                overflow: hidden;\n                text-overflow: ellipsis;\n            }\n            &:hover {\n                box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.14);\n            }\n            .going-status {\n                cursor: pointer;\n                background-color: $a-color;\n                font-size: 0.8em;\n                margin-left: 10px;\n                padding: 2px 4px;\n                &:hover {\n                    border: 1px solid $s-text-color;\n                }\n            }\n        }\n        */ }\n\n.bar {\n  box-sizing: border-box;\n  border-bottom: 1px solid #B6B6B6;\n  padding: 5px;\n  margin: 6px;\n  line-height: 20px; }\n  .bar h3 {\n    font-size: 1.1em; }\n  .bar a {\n    color: #727272;\n    text-decoration: none; }\n  .bar .bar-image {\n    float: left;\n    margin-left: 5px; }\n    .bar .bar-image img {\n      margin-top: 10px;\n      width: 80px;\n      border-radius: 50%; }\n  .bar .bar-info {\n    padding: 5px 5px 5px 15px;\n    overflow: auto;\n    height: auto; }\n  .bar .snippet {\n    color: #727272;\n    text-overflow: ellipsis; }\n  .bar:hover {\n    box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.14); }\n  .bar .going-status {\n    cursor: pointer;\n    background-color: #FFC107;\n    font-size: 0.8em;\n    margin-left: 10px;\n    padding: 2px 4px; }\n    .bar .going-status:hover {\n      border: 1px solid #727272; }\n\n.me-container {\n  text-align: center;\n  max-width: 500px;\n  margin-right: auto;\n  margin-left: auto; }\n  .me-container .bars-list {\n    margin-right: auto;\n    margin-left: auto; }\n    .me-container .bars-list .bar {\n      /*\n            box-sizing: border-box;\n            border-bottom: 1px solid $divider-color;\n            padding: 5px;\n            margin: 6px;\n            box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.14);\n            h3 {\n                font-size: 1.1em;\n            }\n            .bar-image {\n                float: left;\n                width: 50px;\n                img {\n                    border-radius: 50%;\n                }\n            }\n            .bar-info {\n                padding: 5px 5px 5px 55px;\n                overflow: auto;\n                height: auto;\n            }\n            */ }\n      .me-container .bars-list .bar button {\n        cursor: pointer;\n        font-family: 'Roboto', sans-serif;\n        width: 90%;\n        padding: 4px 0;\n        background-color: #B6B6B6;\n        border: 1px solid #BDBDBD;\n        transition: all 0.2s; }\n        .me-container .bars-list .bar button:hover {\n          background-color: #EBEBEB; }\n\n.search-container {\n  max-width: 500px;\n  margin-right: auto;\n  margin-left: auto;\n  margin-bottom: 30px; }\n  .search-container form {\n    width: 95%;\n    margin-right: auto;\n    margin-left: auto; }\n    .search-container form input {\n      font-family: 'Roboto', sans-serif;\n      width: 95%;\n      font-size: 1.3em;\n      border: none;\n      border-bottom: 1px solid #B6B6B6;\n      padding: 4px;\n      margin-bottom: 3px; }\n    .search-container form button {\n      height: 38px;\n      width: 87px;\n      font-size: 1.3em;\n      border: none; }\n\n.login {\n  position: relative; }\n  .login .login-img {\n    width: 29px;\n    position: absolute;\n    top: -22px; }\n\n.going {\n  background-color: #B2DFDB; }\n\n.hide {\n  display: none; }\n\n.blank {\n  padding-left: 20px; }\n\n.yelp {\n  text-align: center;\n  padding: 20px 0; }\n\nfooter {\n  position: absolute;\n  right: 0;\n  bottom: 0;\n  left: 0;\n  text-align: center;\n  height: 25px;\n  padding-top: 9px;\n  background-color: #B2DFDB; }\n\n@media (max-width: 550px) {\n  .login {\n    position: relative; }\n    .login .login-img {\n      width: 29px;\n      position: absolute;\n      top: 12px; }\n  .app-container nav {\n    line-height: 53px; }\n    .app-container nav ul {\n      clear: both; }\n      .app-container nav ul li {\n        font-size: 1em;\n        color: #212121;\n        width: none;\n        display: inline-block;\n        text-align: center;\n        height: 40px; }\n        .app-container nav ul li a {\n          text-decoration: none; }\n        .app-container nav ul li a.active {\n          color: #FFC107;\n          text-decoration: none; }\n        .app-container nav ul li #username {\n          display: inline-block; } }\n", ""]);
+	exports.push([module.id, "/* http://meyerweb.com/eric/tools/css/reset/ \n   v2.0 | 20110126\n   License: none (public domain)\n*/\nhtml, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\nhtml {\n  height: 100%;\n  box-sizing: border-box; }\n\nbody {\n  font-family: 'Roboto', sans-serif;\n  min-height: 100%;\n  position: relative; }\n\n.app-container {\n  margin-right: auto;\n  margin-left: auto;\n  padding-bottom: 60px; }\n  .app-container nav {\n    height: 100px;\n    width: 100%;\n    line-height: 100px;\n    white-space: nowrap;\n    background-color: #00796B;\n    color: #FFFFFF;\n    margin-bottom: 30px; }\n    .app-container nav h1 {\n      padding-left: 10px;\n      font-size: 2em;\n      float: left; }\n    .app-container nav ul {\n      float: right; }\n      .app-container nav ul li {\n        display: inline-block;\n        width: 90px;\n        text-align: center; }\n        .app-container nav ul li a {\n          color: #FFFFFF;\n          text-decoration: none; }\n        .app-container nav ul li a.active {\n          color: #FFC107;\n          text-decoration: none; }\n        .app-container nav ul li #username {\n          display: inline-block;\n          color: #FFFFFF; }\n      .app-container nav ul li.tab {\n        font-size: 1.3em; }\n\n.home-container {\n  max-width: 500px;\n  margin-right: auto;\n  margin-left: auto; }\n  .home-container .bars-list {\n    margin-right: auto;\n    margin-left: auto; }\n\n.bar {\n  box-sizing: border-box;\n  border-bottom: 1px solid #B6B6B6;\n  padding: 5px;\n  margin: 6px;\n  line-height: 20px; }\n  .bar h3 {\n    font-size: 1.1em; }\n  .bar a {\n    color: #727272;\n    text-decoration: none; }\n  .bar .bar-image {\n    float: left;\n    margin-left: 5px; }\n    .bar .bar-image img {\n      margin-top: 10px;\n      width: 80px;\n      border-radius: 50%; }\n  .bar .bar-info {\n    padding: 5px 5px 5px 15px;\n    overflow: auto;\n    height: auto; }\n  .bar .snippet {\n    color: #727272;\n    text-overflow: ellipsis; }\n  .bar:hover {\n    box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.14); }\n  .bar .going-status {\n    cursor: pointer;\n    background-color: #FFC107;\n    font-size: 0.8em;\n    margin-left: 10px;\n    padding: 2px 4px; }\n    .bar .going-status:hover {\n      border: 1px solid #727272; }\n\n.me-container {\n  text-align: center;\n  max-width: 500px;\n  margin-right: auto;\n  margin-left: auto; }\n  .me-container .bars-list {\n    margin-right: auto;\n    margin-left: auto; }\n    .me-container .bars-list .bar button {\n      cursor: pointer;\n      font-family: 'Roboto', sans-serif;\n      width: 90%;\n      padding: 4px 0;\n      background-color: #B6B6B6;\n      border: 1px solid #BDBDBD;\n      transition: all 0.2s; }\n      .me-container .bars-list .bar button:hover {\n        background-color: #EBEBEB; }\n\n.search-container {\n  max-width: 500px;\n  margin-right: auto;\n  margin-left: auto;\n  margin-bottom: 30px; }\n  .search-container form {\n    width: 95%;\n    margin-right: auto;\n    margin-left: auto; }\n    .search-container form input {\n      font-family: 'Roboto', sans-serif;\n      width: 95%;\n      font-size: 1.3em;\n      border: none;\n      border-bottom: 1px solid #B6B6B6;\n      padding: 4px;\n      margin-bottom: 3px; }\n    .search-container form button {\n      height: 38px;\n      width: 87px;\n      font-size: 1.3em;\n      border: none; }\n\n.login {\n  position: relative; }\n  .login .login-img {\n    width: 29px;\n    position: absolute;\n    top: -22px; }\n\n.going {\n  background-color: #B2DFDB; }\n\n.hide {\n  display: none; }\n\n.blank {\n  padding-left: 20px; }\n\n.yelp {\n  text-align: center;\n  padding: 20px 0; }\n\nfooter {\n  position: absolute;\n  right: 0;\n  bottom: 0;\n  left: 0;\n  text-align: center;\n  height: 25px;\n  padding-top: 9px;\n  background-color: #B2DFDB; }\n\n@media (max-width: 550px) {\n  .login {\n    position: relative; }\n    .login .login-img {\n      width: 29px;\n      position: absolute;\n      top: 12px; }\n  .app-container nav {\n    line-height: 53px; }\n    .app-container nav ul {\n      clear: both; }\n      .app-container nav ul li {\n        font-size: 1em;\n        color: #212121;\n        width: none;\n        display: inline-block;\n        text-align: center;\n        height: 40px; }\n        .app-container nav ul li a {\n          text-decoration: none; }\n        .app-container nav ul li a.active {\n          color: #FFC107;\n          text-decoration: none; }\n        .app-container nav ul li #username {\n          display: inline-block; } }\n", ""]);
 
 	// exports
 
