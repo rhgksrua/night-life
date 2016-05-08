@@ -17,7 +17,7 @@ mongoose.set('debug', function (coll, method, query, doc) {
 });
 */
 
-require('dotenv').load();
+require('dotenv').config({silent: true});
 
 var app = express();
 
